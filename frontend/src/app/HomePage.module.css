@@ -1,0 +1,145 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* === SEKCJA HERO === */
+.hero {
+    position: relative;
+    padding: 100px 0;
+    min-height: 500px;
+    background-image: url('/hero-bg.jpg'); /* Upewnij się, że masz ten plik w folderze /public */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #e0f0fb;
+}
+.heroOverlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+.heroContent {
+    position: relative;
+}
+.heroContent h1 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem); /* Responsywna czcionka */
+    font-weight: 800;
+    line-height: 1.2;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+.heroContent p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 20px auto 0;
+    color: rgba(255, 255, 255, 0.9);
+}
+.btn {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 15px 30px;
+    border-radius: 8px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+}
+.btn:hover {
+    transform: scale(1.05);
+    background-color: #45a049;
+}
+
+/* === SEKCJA STATYSTYK === */
+.statsSection {
+    padding: 80px 0;
+    background-color: white;
+    border-bottom: 1px solid #e2e8f0;
+}
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+}
+
+/* === SEKCJA USŁUG === */
+.servicesSection {
+    padding: 100px 0;
+}
+.sectionHeader {
+    text-align: center;
+    margin-bottom: 60px;
+}
+.sectionHeader h2 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #2d3748;
+}
+.sectionHeader p {
+    font-size: 1.1rem;
+    color: #718096;
+    margin-top: 10px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.servicesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+.serviceCard {
+    background-color: #1a202c;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s;
+    text-align: center;
+}
+.serviceCard:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+.serviceIcon {
+    font-size: 3rem;
+    color: #4CAF50;
+    margin-bottom: 20px;
+}
+.serviceCard h3 {
+    font-size: 1.5rem;
+    color: #2d3748;
+    margin-bottom: 15px;
+}
+.serviceCard p {
+    color: #718096;
+    margin-bottom: 25px;
+}
+.serviceLink {
+    color: #4CAF50;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+/* === SEKCJA CTA === */
+.ctaSection {
+    padding: 80px 0;
+    background-color: #2d3748;
+    color: white;
+    text-align: center;
+}
+.ctaSection h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+.ctaSection p {
+    font-size: 1.1rem;
+    color: #a0aec0;
+    max-width: 600px;
+    margin: 20px auto 0;
+}

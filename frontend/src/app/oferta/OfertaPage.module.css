@@ -1,0 +1,107 @@
+/* frontend/src/app/oferta/OfertaPage.module.css */
+
+/* === UNIWERSALNE STYLE PODSTRONY === */
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.pageHeader {
+    background-color: #2d3748;
+    color: white;
+    padding: 60px 0;
+    text-align: center;
+}
+.pageHeader h1 {
+    font-size: 3rem;
+    font-weight: 800;
+}
+.pageHeader p {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 10px;
+}
+
+.mainContent {
+    padding: 100px 0;
+    background-color: #e0f0fb; /* Tło dla strony Oferta */
+}
+
+.loadingText, .errorText {
+    text-align: center;
+    font-size: 1.2rem;
+    padding: 50px 0;
+}
+.errorText {
+    color: #e53e3e;
+}
+
+/* === STYLE SPECYFICZNE DLA STRONY OFERTY === */
+.offerItem {
+    display: flex;
+    gap: 60px;
+    align-items: center;
+    margin-bottom: 100px;
+}
+.offerItem:last-child {
+    margin-bottom: 0;
+}
+.offerItem.reverse {
+    flex-direction: row-reverse;
+}
+
+.offerImage {
+    flex: 1;
+}
+.image {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.offerContent {
+    flex: 1;
+}
+.offerContent h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 20px;
+}
+.offerContent p {
+    color: #1a202c;
+    margin-bottom: 30px;
+    line-height: 1.8;
+}
+.offerContent ul {
+    list-style: none;
+    padding-left: 0;
+}
+.offerContent ul li {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
+    font-weight: 600;
+    color: #1a202c;
+}
+.offerContent ul li::before {
+    content: '✔';
+    color: #4CAF50;
+    font-weight: bold;
+    margin-right: 15px;
+    font-size: 1.2rem;
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    .offerItem,
+    .offerItem.reverse {
+        flex-direction: column;
+        gap: 40px;
+    }
+    .offerContent h2 {
+        font-size: 2rem;
+    }
+}

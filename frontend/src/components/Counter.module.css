@@ -1,0 +1,13 @@
+.counterWrapper {
+    text-align: center;
+}
+.stat {
+    font-size: 3rem; /* 48px */
+    font-weight: 800;
+    color: #4CAF50; /* Zielony akcent */
+}
+.text {
+    margin-top: 8px;
+    color: #718096; /* Jaśniejszy tekst */
+    font-weight: 600;
+}

@@ -1,0 +1,12 @@
+### Pobierz wszystkie posty
+GET http://localhost:5000/api/posts
+
+###
+### Stwórz nowy post
+POST http://localhost:5000/api/posts
+Content-Type: application/json
+
+{
+      "title": "Pierwszy testowy post",
+    "content": "To jest treść testowego posta z backendu. Sprawdź, czy wyświetla się na frontendzie!"
+}

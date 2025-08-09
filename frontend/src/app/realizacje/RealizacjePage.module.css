@@ -1,0 +1,101 @@
+/* frontend/src/app/realizacje/RealizacjePage.module.css */
+
+/* === UNIWERSALNE STYLE PODSTRONY === */
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.pageHeader {
+    background-color: #2d3748;
+    color: white;
+    padding: 60px 0;
+    text-align: center;
+}
+.pageHeader h1 {
+    font-size: 3rem;
+    font-weight: 800;
+}
+.pageHeader p {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 10px;
+}
+
+.mainContent {
+    padding: 100px 0;
+    background-color: #e0f0fb; /* Tło dla strony Realizacje */
+}
+
+.infoText {
+    text-align: center;
+    font-size: 1.2rem;
+    padding: 50px 0;
+    color: #2d3748; /* Ciemniejszy tekst dla lepszego kontrastu na niebieskim tle */
+}
+.errorText {
+    color: #9b2c2c; /* Ciemniejszy czerwony dla lepszego kontrastu */
+}
+
+/* === STYLE SPECYFICZNE DLA GALERII REALIZACJI === */
+.galleryGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+.galleryCard {
+    background-color: white; /* Białe tło dla kart, aby odcinały się od niebieskiego */
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.galleryCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.galleryImage {
+    height: 220px;
+    width: 100%;
+    background-color: #e2e8f0;
+}
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.galleryContent {
+    padding: 25px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+.galleryContent h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 10px;
+}
+.galleryContent p {
+    color: #1a202c;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.categoryTag {
+    display: inline-block;
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #4CAF50;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    align-self: flex-start;
+}
