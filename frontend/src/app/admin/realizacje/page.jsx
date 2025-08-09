@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from './AdminRealizacje.module.css';
 
-const BACKEND_URL = 'http://localhost:5000';
+const BACKEND_URL = 'https://home-evolution-backend.onrender.com';
 
 export default function AdminRealizacjePage() {
   // Stany dla formularza tworzenia
