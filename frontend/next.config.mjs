@@ -10,9 +10,14 @@ const nextConfig = {
         port: '5000',
         pathname: '/uploads/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'home-evolution-backend.onrender.com',
+        port: '', // Domyślny port dla https (443), więc zostawiamy puste
+        pathname: '/uploads/**',
+      },
     ],
   },
 };
 
-// Zamiast module.exports, używamy poprawnej składni ES Modułów
-export default nextConfig; 
+export default nextConfig;
