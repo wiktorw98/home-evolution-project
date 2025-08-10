@@ -1,21 +1,24 @@
-import Navbar from '@/components/Navbar'; // Używamy aliasu, który działał
-import Footer from '@/components/Footer'; // Używamy tego samego, spójnego aliasu
-import { Poppins } from 'next/font/google';
+import Navbar from '../components/Navbar.jsx';
+import Footer from '../components/Footer.jsx';
+import { Inter } from 'next/font/google'; // 1. Importujemy nową czcionkę Inter
 import './globals.css';
 
-const poppins = Poppins({
+// 2. Konfigurujemy czcionkę Inter
+const inter = Inter({
   subsets: ['latin'],
-  weight: ['400', '600', '700', '800']
+  weight: ['400', '500', '600', '700', '800'], // '400' to normal, '700' to bold
+  display: 'swap', // Zapewnia, że tekst jest widoczny, zanim czcionka się załaduje
 });
 
 export const metadata = {
-  title: "Home Evolution",
-  description: "Nowoczesne rozwiązania dla Twojego domu.",
+  title: "Home Evolution - Nowoczesne Rozwiązania dla Domu",
+  description: "Fotowoltaika, termomodernizacje, wymiana kotłów. Kompleksowe usługi OZE dla Twojego domu w Kielcach i okolicach.",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="pl" className={poppins.className}>
+    // 3. Aplikujemy nową czcionkę do całej strony
+    <html lang="pl" className={inter.className}>
       <body>
         <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
           <Navbar />

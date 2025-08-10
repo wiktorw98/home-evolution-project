@@ -5,7 +5,11 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+// ZMIANA: Importujemy uniwersalne style dla nagłówka
+import pageStyles from '../Subpage.module.css';
 import styles from './RealizacjePage.module.css';
+// ZMIANA: Importujemy ikonę dla karty
+import { FiPlus } from 'react-icons/fi';
 
 const BACKEND_URL = 'http://localhost:5000';
 
@@ -28,50 +32,69 @@ export default function RealizacjePage() {
     fetchRealizations();
   }, []);
 
+  // Definicje animacji dla Framer Motion
+  const cardVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+  const overlayVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 0.4, ease: 'easeOut' } },
+  };
+
   return (
-    <div className={styles.pageWrapper}>
-      {/* === NAGŁÓWEK STRONY === */}
-      <header className={styles.pageHeader}>
-        <div className={styles.container}>
+    <div>
+      {/* ZMIANA: Używamy naszego spójnego, uniwersalnego nagłówka */}
+      <header className={pageStyles.pageHeader}>
+        <div className={pageStyles.container}>
           <h1>Nasze Realizacje</h1>
           <p>Jesteśmy dumni z naszej pracy. Zobacz efekty.</p>
         </div>
       </header>
 
-      {/* === GALERIA === */}
+      {/* ZMIANA: Używamy nowej klasy dla tła głównej treści */}
       <main className={styles.mainContent}>
-        <div className={styles.container}>
-          {loading && <p className={styles.infoText}>Ładowanie realizacji...</p>}
-          {error && <p className={`${styles.infoText} ${styles.errorText}`}>{error}</p>}
+        <div className={pageStyles.container}>
+          {loading && <p className={pageStyles.infoText}>Ładowanie realizacji...</p>}
+          {error && <p className={`${pageStyles.infoText} ${pageStyles.errorText}`}>{error}</p>}
           
           {!loading && !error && realizations.length === 0 && (
-            <p className={styles.infoText}>Aktualnie brak realizacji do wyświetlenia. Dodaj pierwszą w panelu admina!</p>
+            <p className={pageStyles.infoText}>Aktualnie brak realizacji do wyświetlenia.</p>
           )}
 
           {!loading && !error && realizations.length > 0 && (
             <div className={styles.galleryGrid}>
               {realizations.map((realization, index) => (
+                // ZMIANA: Całkowicie nowa struktura karty
                 <motion.div 
                   key={realization._id} 
                   className={styles.galleryCard}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  variants={cardVariants}
+                  initial="hidden"
+                  animate="visible"
                   transition={{ duration: 0.5, delay: index * 0.1 }}
+                  whileHover="visible" // Uruchamia animacje dzieci przy najechaniu
                 >
-                  <div className={styles.galleryImage}>
+                  <motion.div className={styles.imageContainer}>
                     <Image
                       src={`${BACKEND_URL}/${realization.imageUrl}`}
                       alt={realization.title}
-                      width={400}
-                      height={250}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className={styles.image}
                     />
-                  </div>
-                  <div className={styles.galleryContent}>
-                    <span className={styles.categoryTag}>{realization.category}</span>
-                    <h3>{realization.title}</h3>
-                    <p>{realization.description}</p>
-                  </div>
+                  </motion.div>
+                  
+                  <motion.div className={styles.overlay} variants={overlayVariants}>
+                    <div className={styles.cardContent}>
+                      <span className={styles.categoryTag}>{realization.category}</span>
+                      <h3>{realization.title}</h3>
+                    </div>
+                    <motion.div className={styles.plusIcon} whileHover={{ scale: 1.2, rotate: 90 }}>
+                      <FiPlus size={32} />
+                    </motion.div>
+                  </motion.div>
                 </motion.div>
               ))}
             </div>

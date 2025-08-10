@@ -4,7 +4,11 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
-import styles from './OfertaPage.module.css';
+import { motion } from 'framer-motion';
+import pageStyles from '../Subpage.module.css';
+import offerStyles from './OfertaPage.module.css';
+// Importujemy ikonę, która zastąpi standardowy "ptaszek"
+import { BsCheckCircleFill } from 'react-icons/bs';
 
 const BACKEND_URL = 'http://localhost:5000';
 
@@ -28,45 +32,56 @@ export default function OfertaPage() {
   }, []);
 
   return (
-    <div className={styles.pageWrapper}>
-      <header className={styles.pageHeader}>
-        <div className={styles.container}>
+    <div>
+      <header className={pageStyles.pageHeader}>
+        <div className={pageStyles.container}>
           <h1>Nasza Oferta</h1>
           <p>Poznaj szczegóły naszych kompleksowych usług.</p>
         </div>
       </header>
 
-      <main className={styles.mainContent}>
-        <div className={styles.container}>
-          {loading && <p className={styles.loadingText}>Ładowanie oferty...</p>}
-          {error && <p className={styles.errorText}>{error}</p>}
+      <main className={offerStyles.mainContent}>
+        <div className={pageStyles.container}>
+          {loading && <p className={pageStyles.infoText}>Ładowanie oferty...</p>}
+          {error && <p className={`${pageStyles.infoText} ${pageStyles.errorText}`}>{error}</p>}
           
-          {!loading && !error && offers.map((service, index) => (
-            <section 
-              key={service.serviceId} 
-              id={service.serviceId} 
-              className={`${styles.offerItem} ${index % 2 !== 0 ? styles.reverse : ''}`}
-            >
-              <div className={styles.offerImage}>
-                <Image
-                  src={`${BACKEND_URL}/${service.imageUrl}`}
-                  alt={service.title}
-                  width={550}
-                  height={370}
-                  className={styles.image}
-                />
-              </div>
-              <div className={styles.offerContent}>
-                <h2>{service.title}</h2>
-                <p>{service.description}</p>
-                <ul>
-                  {service.benefits.map((benefit, i) => (
-                    <li key={i}>{benefit}</li>
-                  ))}
-                </ul>
-              </div>
-            </section>
-          ))}
+          <div className={offerStyles.offerList}>
+            {!loading && !error && offers.map((service, index) => (
+              <motion.section 
+                key={service.serviceId} 
+                id={service.serviceId} 
+                className={`${offerStyles.offerCard} ${index % 2 !== 0 ? offerStyles.reverse : ''}`}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.6, ease: 'easeOut' }}
+                // Dodajemy efekt "uniesienia" po najechaniu myszką
+                whileHover={{ y: -8, boxShadow: '0 20px 35px rgba(45, 55, 72, 0.1)' }}
+              >
+                <div className={offerStyles.offerImage}>
+                  <Image
+                    src={`${BACKEND_URL}/${service.imageUrl}`}
+                    alt={service.title}
+                    width={550}
+                    height={370}
+                    className={offerStyles.image}
+                  />
+                </div>
+                <div className={offerStyles.offerContent}>
+                  <h2>{service.title}</h2>
+                  <p>{service.description}</p>
+                  <ul>
+                    {service.benefits.map((benefit, i) => (
+                      <li key={i}>
+                        <BsCheckCircleFill className={offerStyles.benefitIcon} />
+                        <span>{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.section>
+            ))}
+          </div>
         </div>
       </main>
     </div>

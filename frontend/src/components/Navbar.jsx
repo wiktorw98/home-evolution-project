@@ -1,31 +1,60 @@
-'use client';
-import React, { useState } from 'react';
+// frontend/src/components/Navbar.jsx
+'use client'; // Potrzebne do użycia haka usePathname
+
+import React from 'react';
 import Link from 'next/link';
-import styles from './Navbar.module.css'; // Importujemy style!
-import { FiMenu, FiX } from 'react-icons/fi';
+// Importujemy hak do sprawdzania aktualnej ścieżki URL
+import { usePathname } from 'next/navigation';
+import styles from './Navbar.module.css';
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const navLinks = [
-    { title: 'Strona Główna', path: '/' },
-    { title: 'Oferta', path: '/oferta' },
-    { title: 'Realizacje', path: '/realizacje' },
-    { title: 'Blog', path: '/blog' },
-    { title: 'Kontakt', path: '/kontakt' },
-  ];
+  // Pobieramy aktualną ścieżkę, np. "/oferta"
+  const pathname = usePathname();
 
   return (
     <header className={styles.navbar}>
       <div className={styles.container}>
-        <Link href="/" className={styles.logo}>Home Evolution</Link>
-        <nav className={`${styles.navLinks} ${isOpen ? styles.active : ''}`}>
-          {navLinks.map((link) => (
-            <Link key={link.title} href={link.path}>{link.title}</Link>
-          ))}
+        <Link href="/" className={styles.logo}>
+          Home Evolution
+        </Link>
+        
+        {/* Przywracamy menu nawigacyjne */}
+        <nav>
+          <ul className={styles.navLinks}>
+            <li>
+              <Link 
+                href="/oferta" 
+                className={pathname === '/oferta' ? styles.active : ''}
+              >
+                Oferta
+              </Link>
+            </li>
+            <li>
+              <Link 
+                href="/realizacje" 
+                className={pathname === '/realizacje' ? styles.active : ''}
+              >
+                Realizacje
+              </Link>
+            </li>
+            <li>
+              <Link 
+                href="/blog" 
+                className={pathname === '/blog' ? styles.active : ''}
+              >
+                Blog
+              </Link>
+            </li>
+            <li>
+              <Link 
+                href="/kontakt" 
+                className={pathname === '/kontakt' ? styles.active : ''}
+              >
+                Kontakt
+              </Link>
+            </li>
+          </ul>
         </nav>
-        <button className={styles.hamburger} onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <FiX size={28} /> : <FiMenu size={28} />}
-        </button>
       </div>
     </header>
   );

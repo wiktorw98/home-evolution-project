@@ -1,152 +1,173 @@
 /* frontend/src/app/kontakt/KontaktPage.module.css */
 
-/* === UNIWERSALNE STYLE PODSTRONY (SPÓJNE Z OFERTĄ) === */
-.container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-.pageHeader {
-    background-color: #2d3748;
-    color: white;
-    padding: 60px 0;
-    text-align: center;
-}
-.pageHeader h1 {
-    font-size: 3rem;
-    font-weight: 800;
-}
-.pageHeader p {
-    font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.8);
-    margin-top: 10px;
-}
 .mainContent {
-    padding: 100px 0;
-    background-color: #e0f0fb; /* Tło spójne ze stroną Oferta */
+    background-color: #f0f7ff; /* Spójne tło */
+    padding: 80px 0;
 }
 
-/* === UKŁAD STRONY KONTAKTOWEJ === */
+/* ZMIANA: Nowy wrapper dla całego bloku kontaktowego */
+.contactWrapper {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 3rem;
+    box-shadow: 0 10px 30px rgba(45, 55, 72, 0.08);
+    border: 1px solid #e9ecef;
+}
+
 .contactGrid {
     display: grid;
     grid-template-columns: 2fr 1fr;
-    gap: 50px;
-    align-items: flex-start;
+    gap: 4rem;
 }
 
-/* === LEWA KOLUMNA: FORMULARZ === */
-.formContainer {
-    background-color: white; /* Białe tło dla formularza, aby odcinał się od tła strony */
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
 .formContainer h2 {
     font-size: 2rem;
     font-weight: 700;
     color: #2d3748;
     margin-bottom: 10px;
 }
+
 .formContainer p {
-    color: #718096;
-    margin-bottom: 30px;
+    color: #6c757d;
+    margin-bottom: 2.5rem;
 }
+
 .formGroup {
-    margin-bottom: 20px;
+    margin-bottom: 1.5rem;
+    position: relative;
 }
+
 .formGroup label {
     display: block;
     font-weight: 600;
     margin-bottom: 8px;
-    color: #1a202c;
+    color: #4a5568;
+    font-size: 0.9rem;
 }
+
+/* ZMIANA: Nowoczesny styl pól formularza */
 .formGroup input,
 .formGroup textarea {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #cbd5e0;
-    border-radius: 8px;
+    padding: 12px 0;
     font-size: 1rem;
     font-family: inherit;
+    color: #2d3748;
+    border: none;
+    border-bottom: 2px solid #dee2e6;
+    background-color: transparent;
+    transition: border-color 0.3s ease;
 }
+
 .formGroup input:focus,
 .formGroup textarea:focus {
     outline: none;
-    border-color: #4CAF50;
-    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+    /* ZMIANA: Spójny, niebieski kolor focusa */
+    border-color: #007bff;
 }
+
 .formGroup textarea {
     resize: vertical;
+    min-height: 100px;
 }
+
 .submitButton {
     width: 100%;
     padding: 15px;
+    margin-top: 1rem;
     font-size: 1.1rem;
-    background-color: #4CAF50;
+    /* ZMIANA: Spójny, niebieski kolor przycisku */
+    background-color: #007bff;
     color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     font-weight: 700;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
+
+.submitButton:hover:not(:disabled) {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
 .submitButton:disabled {
     background-color: #a0aec0;
     cursor: not-allowed;
 }
 
-/* === PRAWA KOLUMNA: DANE KONTAKTOWE === */
 .detailsContainer {
-    background-color: white; /* Białe tło dla spójności */
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border-left: 1px solid #e9ecef;
+    padding-left: 4rem;
 }
+
 .detailsContainer h3 {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 700;
     color: #2d3748;
-    margin-bottom: 15px;
-}
-.detailsContainer p {
     margin-bottom: 10px;
-    line-height: 1.8;
-    color: #1a202c;
-}
-.detailsContainer a {
-    color: #4CAF50;
-    text-decoration: none;
-    font-weight: 600;
-}
-.detailsHeader {
-    margin-top: 30px;
 }
 
-/* === KOMUNIKATY FORMULARZA === */
+.detailsContainer p {
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+    color: #4a5568;
+}
+
+.detailsContainer a {
+    /* ZMIANA: Spójny, niebieski kolor linków */
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.detailsHeader {
+    margin-top: 2rem;
+}
+
 .messageSuccess, .messageError {
-    margin-top: 20px;
+    margin-top: 1.5rem;
     padding: 15px;
     border-radius: 8px;
-    font-weight: 600;
+    font-weight: 500;
     text-align: center;
 }
-.messageSuccess {
-    background-color: #c6f6d5;
-    color: #276749;
-}
-.messageError {
-    background-color: #fed7d7;
-    color: #9b2c2c;
-}
 
-/* === SEKCJA Z MAPĄ === */
+.messageSuccess { background-color: #d1e7dd; color: #0f5132; }
+.messageError { background-color: #f8d7da; color: #842029; }
+
 .mapSection {
-    padding-top: 80px;
+    padding-top: 0; /* Mapa teraz przylega do stopki */
 }
 
-/* === RESPONSIVE DESIGN === */
+/* ZMIANA: Nowe style dla mapy */
+.mapFrame {
+    border: 0;
+    display: block;
+    width: 100%;
+    filter: grayscale(100%);
+    transition: filter 0.4s ease;
+}
+
+.mapFrame:hover {
+    filter: grayscale(0%);
+}
+
 @media (max-width: 992px) {
     .contactGrid {
         grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+    .detailsContainer {
+        border-left: none;
+        border-top: 1px solid #e9ecef;
+        padding-left: 0;
+        padding-top: 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .contactWrapper {
+        padding: 2rem;
     }
 }

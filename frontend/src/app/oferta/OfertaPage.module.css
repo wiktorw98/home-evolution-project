@@ -1,107 +1,113 @@
 /* frontend/src/app/oferta/OfertaPage.module.css */
 
-/* === UNIWERSALNE STYLE PODSTRONY === */
-.container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-.pageHeader {
-    background-color: #2d3748;
-    color: white;
-    padding: 60px 0;
-    text-align: center;
-}
-.pageHeader h1 {
-    font-size: 3rem;
-    font-weight: 800;
-}
-.pageHeader p {
-    font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.8);
-    margin-top: 10px;
-}
-
+/* === GŁÓWNA ZAWARTOŚĆ STRONY === */
 .mainContent {
-    padding: 100px 0;
-    background-color: #e0f0fb; /* Tło dla strony Oferta */
+    padding: 80px 0;
+    /* 
+      TUTAJ ZNAJDUJE SIĘ KLUCZOWA ZMIANA:
+      Nadajemy tłu subtelny, ale wyraźny kolor.
+      To "odklei" białe karty od tła i nada stronie strukturę.
+    */
+    background-color: #f0f7ff; /* Jasnoniebieskie, "powietrzne" tło */
 }
 
-.loadingText, .errorText {
-    text-align: center;
-    font-size: 1.2rem;
-    padding: 50px 0;
-}
-.errorText {
-    color: #e53e3e;
+.offerList {
+    display: flex;
+    flex-direction: column;
+    gap: 5rem; /* Zwiększony odstęp między kartami */
 }
 
-/* === STYLE SPECYFICZNE DLA STRONY OFERTY === */
-.offerItem {
+/* === STYL KARTY OFERTY (BEZ ZMIAN) === */
+.offerCard {
     display: flex;
     gap: 60px;
     align-items: center;
-    margin-bottom: 100px;
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 16px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 8px 20px rgba(45, 55, 72, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.offerItem:last-child {
-    margin-bottom: 0;
-}
-.offerItem.reverse {
+
+.offerCard.reverse {
     flex-direction: row-reverse;
 }
 
 .offerImage {
     flex: 1;
+    min-width: 40%;
 }
+
 .image {
     width: 100%;
     height: auto;
     border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 .offerContent {
     flex: 1;
 }
+
 .offerContent h2 {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     font-weight: 700;
     color: #2d3748;
     margin-bottom: 20px;
 }
+
 .offerContent p {
-    color: #1a202c;
+    color: #4a5568;
     margin-bottom: 30px;
-    line-height: 1.8;
+    line-height: 1.7;
 }
+
 .offerContent ul {
     list-style: none;
     padding-left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
+
 .offerContent ul li {
-    margin-bottom: 15px;
     display: flex;
     align-items: flex-start;
-    font-weight: 600;
-    color: #1a202c;
-}
-.offerContent ul li::before {
-    content: '✔';
-    color: #4CAF50;
-    font-weight: bold;
-    margin-right: 15px;
-    font-size: 1.2rem;
+    gap: 12px;
+    font-weight: 500;
+    color: #2d3748;
     line-height: 1.5;
 }
 
-@media (max-width: 768px) {
-    .offerItem,
-    .offerItem.reverse {
-        flex-direction: column;
+.benefitIcon {
+    color: #28a745;
+    font-size: 1.2rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+
+/* === MEDIA QUERIES (BEZ ZMIAN) === */
+@media (max-width: 992px) {
+    .offerCard,
+    .offerCard.reverse {
         gap: 40px;
     }
     .offerContent h2 {
         font-size: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .mainContent {
+        padding: 60px 0;
+    }
+    .offerList {
+        gap: 3rem;
+    }
+    .offerCard,
+    .offerCard.reverse {
+        flex-direction: column;
+        padding: 30px;
     }
 }

@@ -1,101 +1,106 @@
 /* frontend/src/app/realizacje/RealizacjePage.module.css */
 
-/* === UNIWERSALNE STYLE PODSTRONY === */
-.container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-.pageHeader {
-    background-color: #2d3748;
-    color: white;
-    padding: 60px 0;
-    text-align: center;
-}
-.pageHeader h1 {
-    font-size: 3rem;
-    font-weight: 800;
-}
-.pageHeader p {
-    font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.8);
-    margin-top: 10px;
-}
-
 .mainContent {
-    padding: 100px 0;
-    background-color: #e0f0fb; /* Tło dla strony Realizacje */
+    /* ZMIANA: Ustawiamy nasze spójne, jasnoniebieskie tło */
+    background-color: #f0f7ff;
+    padding: 80px 0;
 }
 
-.infoText {
-    text-align: center;
-    font-size: 1.2rem;
-    padding: 50px 0;
-    color: #2d3748; /* Ciemniejszy tekst dla lepszego kontrastu na niebieskim tle */
-}
-.errorText {
-    color: #9b2c2c; /* Ciemniejszy czerwony dla lepszego kontrastu */
-}
-
-/* === STYLE SPECYFICZNE DLA GALERII REALIZACJI === */
 .galleryGrid {
     display: grid;
+    /* ZMIANA: Tworzymy responsywną siatkę */
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 30px;
+    gap: 2rem;
 }
 
 .galleryCard {
-    background-color: white; /* Białe tło dla kart, aby odcinały się od niebieskiego */
+    position: relative;
+    aspect-ratio: 16 / 10; /* Utrzymuje proporcje karty */
     border-radius: 12px;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transition: all 0.3s;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-.galleryCard:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    -webkit-transform: translateZ(0); /* Poprawka dla płynności animacji w Safari */
 }
 
-.galleryImage {
-    height: 220px;
-    width: 100%;
-    background-color: #e2e8f0;
-}
-.image {
+.imageContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
 }
 
-.galleryContent {
-    padding: 25px;
-    flex-grow: 1;
+.image {
+    object-fit: cover; /* Gwarantuje, że obraz wypełni kontener bez zniekształceń */
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.galleryCard:hover .image {
+    transform: scale(1.1); /* Efekt delikatnego powiększenia zdjęcia */
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    padding: 1.5rem;
+    color: #ffffff;
+    /* ZMIANA: Elegancki gradient, który zapewnia czytelność tekstu */
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 60%);
 }
-.galleryContent h3 {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #2d3748;
-    margin-bottom: 10px;
+
+.cardContent {
+    transform: translateY(20px);
+    opacity: 0;
+    transition: transform 0.4s ease, opacity 0.4s ease;
 }
-.galleryContent p {
-    color: #1a202c;
-    font-size: 0.95rem;
-    line-height: 1.6;
+
+.galleryCard:hover .cardContent {
+    transform: translateY(0);
+    opacity: 1;
 }
 
 .categoryTag {
-    display: inline-block;
-    background-color: rgba(76, 175, 80, 0.1);
-    color: #4CAF50;
-    padding: 5px 12px;
+    background-color: rgba(0, 170, 255, 0.8);
+    color: #fff;
+    padding: 4px 10px;
     border-radius: 20px;
     font-size: 0.8rem;
     font-weight: 600;
-    margin-bottom: 15px;
-    align-self: flex-start;
+    text-transform: uppercase;
+}
+
+.cardContent h3 {
+    margin: 0.75rem 0 0 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.3;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.plusIcon {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    transform: scale(0.8);
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+
+.galleryCard:hover .plusIcon {
+    transform: scale(1);
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .galleryGrid {
+        grid-template-columns: 1fr;
+    }
 }

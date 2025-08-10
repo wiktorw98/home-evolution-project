@@ -9,6 +9,9 @@ const postController = require('../controllers/postController');
 // GET /api/posts -> Pobierz wszystkie posty
 router.get('/', postController.getAllPosts);
 
+// NOWA TRASA: GET /api/posts/:id -> Pobierz jeden post po jego ID
+router.get('/:id', postController.getPostById);
+
 // POST /api/posts -> Stwórz nowy post
 router.post('/', postController.createPost);
 

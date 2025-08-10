@@ -2,10 +2,9 @@
 
 const Post = require('../models/Post');
 
-// --- Pobieranie wszystkich postów ---
+// --- Pobieranie wszystkich postów (BEZ ZMIAN) ---
 exports.getAllPosts = async (req, res) => {
   try {
-    // Sortujemy posty od najnowszych (-1) do najstarszych
     const posts = await Post.find().sort({ createdAt: -1 });
     res.json(posts);
   } catch (err) {
@@ -13,9 +12,22 @@ exports.getAllPosts = async (req, res) => {
   }
 };
 
-// --- Tworzenie nowego posta ---
+// === NOWA FUNKCJA: POBIERANIE JEDNEGO POSTA PO ID ===
+exports.getPostById = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: 'Nie znaleziono posta o podanym ID' });
+    }
+    res.json(post);
+  } catch (err) {
+    console.error('Błąd przy pobieraniu pojedynczego posta:', err);
+    res.status(500).json({ message: 'Błąd serwera' });
+  }
+};
+
+// --- Tworzenie nowego posta (BEZ ZMIAN) ---
 exports.createPost = async (req, res) => {
-  // Pobieramy dane z ciała żądania (wysłane z formularza w panelu admina)
   const { title, content, imageUrl } = req.body;
 
   const newPost = new Post({
@@ -26,22 +38,21 @@ exports.createPost = async (req, res) => {
 
   try {
     const savedPost = await newPost.save();
-    res.status(201).json(savedPost); // 201 - status "Created"
+    res.status(201).json(savedPost);
   } catch (err) {
     res.status(400).json({ message: 'Błąd walidacji. Sprawdź dane.' });
   }
 };
 
-// --- Usuwanie posta ---
+// --- Usuwanie posta (BEZ ZMIAN) ---
 exports.deletePost = async (req, res) => {
   try {
-    // Szukamy posta po ID, które jest w adresie URL (np. /api/posts/12345)
     const post = await Post.findById(req.params.id);
     if (!post) {
       return res.status(404).json({ message: 'Nie znaleziono posta.' });
     }
 
-    await post.deleteOne(); // Używamy deleteOne() na znalezionym dokumencie
+    await post.deleteOne();
     res.json({ message: 'Post został usunięty.' });
   } catch (err) {
     res.status(500).json({ message: 'Błąd serwera przy usuwaniu posta.' });

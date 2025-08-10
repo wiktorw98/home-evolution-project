@@ -4,7 +4,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import styles from './BlogPage.module.css';
+import Link from 'next/link'; // ZMIANA: Importujemy Link
+import pageStyles from '../Subpage.module.css'; 
+import blogStyles from './BlogPage.module.css'; 
 
 const BACKEND_URL = 'http://localhost:5000';
 
@@ -28,40 +30,54 @@ export default function BlogPage() {
   }, []);
 
   return (
-    <div className={styles.pageWrapper}>
-      {/* === NAGŁÓWEK STRONY === */}
-      <header className={styles.pageHeader}>
-        <div className={styles.container}>
+    <div>
+      <header className={pageStyles.pageHeader}>
+        <div className={pageStyles.container}>
           <h1>Blog i Aktualności</h1>
           <p>Najnowsze informacje z branży i życia naszej firmy.</p>
         </div>
       </header>
 
-      {/* === LISTA POSTÓW === */}
-      <main className={styles.mainContent}>
-        <div className={styles.container}>
-          {loading && <p className={styles.infoText}>Ładowanie wpisów...</p>}
-          {error && <p className={`${styles.infoText} ${styles.errorText}`}>{error}</p>}
+      {/* ZMIANA: Używamy nowej klasy dla tła */}
+      <main className={blogStyles.mainContent}>
+        <div className={pageStyles.container}>
+          {loading && <p className={pageStyles.infoText}>Ładowanie wpisów...</p>}
+          {error && <p className={`${pageStyles.infoText} ${pageStyles.errorText}`}>{error}</p>}
           
           {!loading && !error && posts.length === 0 && (
-            <p className={styles.infoText}>Aktualnie brak wpisów na blogu. Dodaj pierwszy w panelu admina!</p>
+            <p className={pageStyles.infoText}>Aktualnie brak wpisów na blogu. Zapraszamy wkrótce!</p>
           )}
 
           {!loading && !error && posts.length > 0 && (
-            <div className={styles.blogList}>
+            // ZMIANA: Zmieniamy klasę na 'blogGrid'
+            <div className={blogStyles.blogGrid}>
               {posts.map((post, index) => (
+                // ZMIANA: Całkowicie nowa struktura karty posta
                 <motion.article 
                   key={post._id} 
-                  className={styles.blogPost}
+                  className={blogStyles.blogCard}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
+                  whileHover={{ y: -5, boxShadow: '0 15px 25px rgba(45, 55, 72, 0.1)' }}
                 >
-                  <h2>{post.title}</h2>
-                  <div className={styles.postMeta}>
-                    Opublikowano: {new Date(post.createdAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' })}
+                  <div className={blogStyles.cardContent}>
+                    <div className={blogStyles.postMeta}>
+                      Opublikowano: {new Date(post.createdAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    </div>
+                    <Link href={`/blog/${post._id}`} passHref>
+                      <h2 className={blogStyles.postTitle}>{post.title}</h2>
+                    </Link>
+                    <p className={blogStyles.postExcerpt}>
+                      {/* ZMIANA: Tworzymy "zajawkę" zamiast pełnej treści */}
+                      {post.content.substring(0, 150)}...
+                    </p>
+                    <Link href={`/blog/${post._id}`} passHref>
+                      <span className={blogStyles.readMoreLink}>
+                        Czytaj dalej <span className={blogStyles.arrow}>→</span>
+                      </span>
+                    </Link>
                   </div>
-                  <p className={styles.postContent}>{post.content}</p>
                 </motion.article>
               ))}
             </div>
