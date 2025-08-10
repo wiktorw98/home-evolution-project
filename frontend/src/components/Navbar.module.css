@@ -1,18 +1,55 @@
 /* frontend/src/components/Navbar.module.css */
 .navbar { background-color: #2a3a50; padding: 15px 0; position: fixed; width: 100%; top: 0; left: 0; z-index: 1000; border-bottom: none; }
 .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
-
-/* ZMIANA: Stylujemy kontener linku z logo, a nie sam tekst */
-.logoLink {
-    display: flex; /* Ważne dla poprawnego wyrównania obrazka */
-    align-items: center;
-    transition: opacity 0.3s ease;
-}
+.logoLink { display: flex; align-items: center; transition: opacity 0.3s ease; }
 .logoLink:hover { opacity: 0.85; }
 
+/* --- NAWIGACJA DESKTOPOWA --- */
+.desktopNav { display: block; }
 .navLinks { list-style: none; display: flex; gap: 35px; margin: 0; padding: 0; }
 .navLinks a { color: #c5d1e3; text-decoration: none; font-weight: 500; font-size: 1rem; transition: color 0.3s ease; position: relative; padding-bottom: 5px; }
 .navLinks a:hover { color: #ffffff; }
 .navLinks a.active { color: #00aaff; font-weight: 700; }
 .navLinks a.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background-color: #00aaff; }
-@media (max-width: 768px) { .navLinks { display: none; } }
+
+/* --- NOWE STYLE DLA MENU MOBILNEGO --- */
+.mobileMenuIcon { display: none; z-index: 1002; }
+.mobileMenuIcon button { background: none; border: none; color: #ffffff; cursor: pointer; padding: 0; display: flex; align-items: center; }
+
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.mobileMenuPanel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 300px;
+    max-width: 80%;
+    height: 100vh;
+    background-color: #2a3a50;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+}
+
+.mobileMenuHeader { display: flex; justify-content: flex-end; margin-bottom: 2rem; }
+.mobileMenuHeader button { background: none; border: none; color: #ffffff; cursor: pointer; }
+
+.mobileNavLinks { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; align-items: center; gap: 2rem; }
+.mobileNavLinks a { color: #ffffff; text-decoration: none; font-size: 1.5rem; font-weight: 600; }
+.mobileNavLinks a.active { color: #00aaff; }
+
+/* --- MEDIA QUERY DO PRZEŁĄCZANIA WIDOKÓW --- */
+@media (max-width: 768px) {
+    .desktopNav { display: none; }
+    .mobileMenuIcon { display: block; }
+}
