@@ -6,7 +6,7 @@ import axios from 'axios';
 import styles from './AdminBlog.module.css';
 
 
-const BACKEND_URL = 'http://localhost:5000';
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default function AdminBlogPage() {
   const [title, setTitle] = useState('');

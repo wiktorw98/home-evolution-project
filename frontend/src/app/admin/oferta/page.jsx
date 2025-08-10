@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from './AdminOferta.module.css'; // Upewnij się, że masz ten plik stylów
 
-const BACKEND_URL = 'http://localhost:5000';
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 // ===================================================================
 // KOMPONENT 1: Formularz do TWORZENIA nowej oferty

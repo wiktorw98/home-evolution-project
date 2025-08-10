@@ -10,7 +10,7 @@ import offerStyles from './OfertaPage.module.css';
 // Importujemy ikonę, która zastąpi standardowy "ptaszek"
 import { BsCheckCircleFill } from 'react-icons/bs';
 
-const BACKEND_URL = 'http://localhost:5000';
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default function OfertaPage() {
   const [offers, setOffers] = useState([]);

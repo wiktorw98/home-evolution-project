@@ -11,7 +11,7 @@ import styles from './RealizacjePage.module.css';
 // ZMIANA: Importujemy ikonę dla karty
 import { FiPlus } from 'react-icons/fi';
 
-const BACKEND_URL = 'http://localhost:5000';
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default function RealizacjePage() {
   const [realizations, setRealizations] = useState([]);

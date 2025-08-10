@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import pageStyles from '../Subpage.module.css';
 import contactStyles from './KontaktPage.module.css';
 
-const BACKEND_URL = 'http://localhost:5000';
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default function KontaktPage() {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });

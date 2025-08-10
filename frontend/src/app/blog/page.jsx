@@ -8,7 +8,7 @@ import Link from 'next/link'; // ZMIANA: Importujemy Link
 import pageStyles from '../Subpage.module.css'; 
 import blogStyles from './BlogPage.module.css'; 
 
-const BACKEND_URL = 'http://localhost:5000';
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default function BlogPage() {
   const [posts, setPosts] = useState([]);
