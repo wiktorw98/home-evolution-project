@@ -5,13 +5,22 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-// ZMIANA: Importujemy uniwersalne style dla nagłówka
+import { FiPlus } from 'react-icons/fi';
 import pageStyles from '../Subpage.module.css';
 import styles from './RealizacjePage.module.css';
-// ZMIANA: Importujemy ikonę dla karty
-import { FiPlus } from 'react-icons/fi';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+// Definicje animacji wyniesione poza komponent dla optymalizacji
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const overlayVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.4, ease: 'easeOut' } },
+};
 
 export default function RealizacjePage() {
   const [realizations, setRealizations] = useState([]);
@@ -32,20 +41,8 @@ export default function RealizacjePage() {
     fetchRealizations();
   }, []);
 
-  // Definicje animacji dla Framer Motion
-  const cardVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0 },
-  };
-
-  const overlayVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.4, ease: 'easeOut' } },
-  };
-
   return (
     <div>
-      {/* ZMIANA: Używamy naszego spójnego, uniwersalnego nagłówka */}
       <header className={pageStyles.pageHeader}>
         <div className={pageStyles.container}>
           <h1>Nasze Realizacje</h1>
@@ -53,7 +50,6 @@ export default function RealizacjePage() {
         </div>
       </header>
 
-      {/* ZMIANA: Używamy nowej klasy dla tła głównej treści */}
       <main className={styles.mainContent}>
         <div className={pageStyles.container}>
           {loading && <p className={pageStyles.infoText}>Ładowanie realizacji...</p>}
@@ -66,7 +62,6 @@ export default function RealizacjePage() {
           {!loading && !error && realizations.length > 0 && (
             <div className={styles.galleryGrid}>
               {realizations.map((realization, index) => (
-                // ZMIANA: Całkowicie nowa struktura karty
                 <motion.div 
                   key={realization._id} 
                   className={styles.galleryCard}
@@ -74,9 +69,9 @@ export default function RealizacjePage() {
                   initial="hidden"
                   animate="visible"
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover="visible" // Uruchamia animacje dzieci przy najechaniu
+                  whileHover="visible"
                 >
-                  <motion.div className={styles.imageContainer}>
+                  <div className={styles.imageContainer}>
                     <Image
                       src={`${BACKEND_URL}/${realization.imageUrl}`}
                       alt={realization.title}
@@ -84,7 +79,7 @@ export default function RealizacjePage() {
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className={styles.image}
                     />
-                  </motion.div>
+                  </div>
                   
                   <motion.div className={styles.overlay} variants={overlayVariants}>
                     <div className={styles.cardContent}>

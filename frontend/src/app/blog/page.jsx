@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import Link from 'next/link'; // ZMIANA: Importujemy Link
+import Link from 'next/link';
 import pageStyles from '../Subpage.module.css'; 
 import blogStyles from './BlogPage.module.css'; 
 
@@ -38,7 +38,6 @@ export default function BlogPage() {
         </div>
       </header>
 
-      {/* ZMIANA: Używamy nowej klasy dla tła */}
       <main className={blogStyles.mainContent}>
         <div className={pageStyles.container}>
           {loading && <p className={pageStyles.infoText}>Ładowanie wpisów...</p>}
@@ -49,10 +48,8 @@ export default function BlogPage() {
           )}
 
           {!loading && !error && posts.length > 0 && (
-            // ZMIANA: Zmieniamy klasę na 'blogGrid'
             <div className={blogStyles.blogGrid}>
               {posts.map((post, index) => (
-                // ZMIANA: Całkowicie nowa struktura karty posta
                 <motion.article 
                   key={post._id} 
                   className={blogStyles.blogCard}
@@ -65,17 +62,14 @@ export default function BlogPage() {
                     <div className={blogStyles.postMeta}>
                       Opublikowano: {new Date(post.createdAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' })}
                     </div>
-                    <Link href={`/blog/${post._id}`} passHref>
+                    <Link href={`/blog/${post._id}`}>
                       <h2 className={blogStyles.postTitle}>{post.title}</h2>
                     </Link>
                     <p className={blogStyles.postExcerpt}>
-                      {/* ZMIANA: Tworzymy "zajawkę" zamiast pełnej treści */}
                       {post.content.substring(0, 150)}...
                     </p>
-                    <Link href={`/blog/${post._id}`} passHref>
-                      <span className={blogStyles.readMoreLink}>
-                        Czytaj dalej <span className={blogStyles.arrow}>→</span>
-                      </span>
+                    <Link href={`/blog/${post._id}`} className={blogStyles.readMoreLink}>
+                      Czytaj dalej <span className={blogStyles.arrow}>→</span>
                     </Link>
                   </div>
                 </motion.article>

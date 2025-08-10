@@ -1,26 +1,26 @@
 // backend/models/Post.js
-
 const mongoose = require('mongoose');
 
 const postSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true, // Tytuł jest wymagany
-    trim: true      // Usuwa białe znaki z początku i końca
+    required: true,
+    trim: true
   },
   content: {
     type: String,
-    required: true  // Treść jest wymagana
+    required: true
   },
-  imageUrl: {
-    type: String,   // Ścieżka do obrazka
-    required: false // Obrazek nie jest obowiązkowy
+  // ZMIANA: Zamiast jednego imageUrl, mamy tablicę 'images'
+  images: {
+    type: [String], // Oznacza tablicę stringów (ścieżek do plików)
+    required: false,
+    default: [] // Domyślnie pusta tablica
   },
   createdAt: {
     type: Date,
-    default: Date.now // Automatycznie ustawia datę utworzenia
+    default: Date.now
   }
 });
 
-// Tworzymy i eksportujemy model 'Post' na podstawie powyższego schematu
 module.exports = mongoose.model('Post', postSchema);

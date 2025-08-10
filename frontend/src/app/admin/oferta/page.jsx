@@ -1,10 +1,10 @@
+// frontend/src/app/admin/oferta/page.jsx
 'use client';
-
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-import styles from './AdminOferta.module.css'; // Upewnij się, że masz ten plik stylów
-
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+import { useRouter } from 'next/navigation';
+import api from '../../../utils/axiosConfig';
+import AdminLayout from '../AdminLayout';
+import styles from './AdminOferta.module.css';
 
 // ===================================================================
 // KOMPONENT 1: Formularz do TWORZENIA nowej oferty
@@ -16,79 +16,47 @@ function OfferCreator({ onOfferCreated }) {
   const [benefits, setBenefits] = useState('');
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!image || !serviceId) {
-      alert('ID Usługi oraz zdjęcie są wymagane!');
-      return;
-    }
+    if (!image) { setError('Zdjęcie jest wymagane!'); return; }
     setLoading(true);
+    setError('');
 
     const formData = new FormData();
     formData.append('serviceId', serviceId.toLowerCase().replace(/\s+/g, '-'));
     formData.append('title', title);
     formData.append('description', description);
-    benefits.split('\n').forEach(b => formData.append('benefits[]', b));
+    benefits.split('\n').forEach(b => formData.append('benefits[]', b.trim()));
     formData.append('image', image);
 
     try {
-      const response = await axios.post(`${BACKEND_URL}/api/offers`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const response = await api.post('/api/offers', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
       alert('Nowa oferta została dodana!');
       onOfferCreated(response.data);
       // Resetowanie formularza
-      setServiceId('');
-      setTitle('');
-      setDescription('');
-      setBenefits('');
-      setImage(null);
-      e.target.reset();
-    } catch (error) {
-      alert(`Wystąpił błąd: ${error.response?.data?.message || error.message}`);
-      console.error(error);
+      setServiceId(''); setTitle(''); setDescription(''); setBenefits(''); setImage(null); e.target.reset();
+    } catch (err) {
+      setError(err.response?.data?.message || 'Wystąpił błąd serwera.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.editorForm} style={{ backgroundColor: '#e9f5e9' }}>
-      <h3 className={styles.editorHeader}>Dodaj nową usługę do oferty</h3>
-      
-      <div className={styles.formGroup}>
-        <label htmlFor="new-serviceId">ID Usługi (np. "wymiana-okien", tylko małe litery, bez spacji)</label>
-        <input id="new-serviceId" type="text" value={serviceId} onChange={(e) => setServiceId(e.target.value)} className={styles.formInput} required />
-      </div>
-      
-      <div className={styles.formGroup}>
-        <label htmlFor="new-title">Tytuł</label>
-        <input id="new-title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} className={styles.formInput} required />
-      </div>
-      
-      <div className={styles.formGroup}>
-        <label htmlFor="new-desc">Opis</label>
-        <textarea id="new-desc" value={description} onChange={(e) => setDescription(e.target.value)} className={styles.formTextarea} required />
-      </div>
-      
-      <div className={styles.formGroup}>
-        <label htmlFor="new-benefits">Korzyści (każda w nowej linii)</label>
-        <textarea id="new-benefits" value={benefits} onChange={(e) => setBenefits(e.target.value)} className={styles.formTextarea} required />
-      </div>
-      
-      <div className={styles.formGroup}>
-        <label htmlFor="new-image">Zdjęcie (wymagane)</label>
-        <input id="new-image" type="file" onChange={(e) => setImage(e.target.files[0])} className={styles.formInput} required />
-      </div>
-      
-      <button type="submit" disabled={loading} className={styles.submitButton}>
-        {loading ? 'Dodawanie...' : 'Dodaj nową ofertę'}
-      </button>
+    <form onSubmit={handleSubmit} className={`${styles.editorForm} ${styles.creatorForm}`}>
+      <h2 className={styles.formHeader}>Dodaj nową usługę do oferty</h2>
+      {error && <p className={styles.messageError}>{error}</p>}
+      <div className={styles.formGroup}><label htmlFor="new-serviceId">ID Usługi (np. "wymiana-okien")</label><input id="new-serviceId" type="text" value={serviceId} onChange={(e) => setServiceId(e.target.value)} required /></div>
+      <div className={styles.formGroup}><label htmlFor="new-title">Tytuł</label><input id="new-title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} required /></div>
+      <div className={styles.formGroup}><label htmlFor="new-desc">Opis</label><textarea id="new-desc" value={description} onChange={(e) => setDescription(e.target.value)} required /></div>
+      <div className={styles.formGroup}><label htmlFor="new-benefits">Korzyści (każda w nowej linii)</label><textarea id="new-benefits" value={benefits} onChange={(e) => setBenefits(e.target.value)} required /></div>
+      <div className={styles.formGroup}><label htmlFor="new-image">Zdjęcie</label><input id="new-image" type="file" onChange={(e) => setImage(e.target.files[0])} required /></div>
+      <button type="submit" disabled={loading} className={styles.submitButton}>{loading ? 'Dodawanie...' : 'Dodaj nową ofertę'}</button>
     </form>
   );
 }
-
 
 // ===================================================================
 // KOMPONENT 2: Formularz do EDYCJI istniejącej oferty
@@ -99,28 +67,23 @@ function OfferEditor({ offer, onUpdate }) {
   const [benefits, setBenefits] = useState(offer.benefits.join('\n'));
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+    setError('');
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
-    benefits.split('\n').forEach(b => formData.append('benefits[]', b));
-    if (image) {
-      formData.append('image', image);
-    }
-
+    benefits.split('\n').forEach(b => formData.append('benefits[]', b.trim()));
+    if (image) formData.append('image', image);
     try {
-      const response = await axios.put(`${BACKEND_URL}/api/offers/${offer.serviceId}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const response = await api.put(`/api/offers/${offer.serviceId}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
       alert('Oferta zaktualizowana pomyślnie!');
       onUpdate(response.data);
-    } catch (error) {
-      alert('Wystąpił błąd podczas aktualizacji.');
-      console.error(error);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Wystąpił błąd serwera.');
     } finally {
       setLoading(false);
     }
@@ -129,34 +92,15 @@ function OfferEditor({ offer, onUpdate }) {
   return (
     <form onSubmit={handleSubmit} className={styles.editorForm}>
       <h3 className={styles.editorHeader}>Edytuj: {offer.title}</h3>
-      
-      <div className={styles.formGroup}>
-        <label htmlFor={`title-${offer.serviceId}`}>Tytuł</label>
-        <input id={`title-${offer.serviceId}`} type="text" value={title} onChange={(e) => setTitle(e.target.value)} className={styles.formInput} />
-      </div>
-      
-      <div className={styles.formGroup}>
-        <label htmlFor={`desc-${offer.serviceId}`}>Opis</label>
-        <textarea id={`desc-${offer.serviceId}`} value={description} onChange={(e) => setDescription(e.target.value)} className={styles.formTextarea} />
-      </div>
-      
-      <div className={styles.formGroup}>
-        <label htmlFor={`benefits-${offer.serviceId}`}>Korzyści (każda w nowej linii)</label>
-        <textarea id={`benefits-${offer.serviceId}`} value={benefits} onChange={(e) => setBenefits(e.target.value)} className={styles.formTextarea} />
-      </div>
-      
-      <div className={styles.formGroup}>
-        <label htmlFor={`image-${offer.serviceId}`}>Zmień zdjęcie (opcjonalnie)</label>
-        <input id={`image-${offer.serviceId}`} type="file" onChange={(e) => setImage(e.target.files[0])} className={styles.formInput} />
-      </div>
-      
-      <button type="submit" disabled={loading} className={styles.submitButton}>
-        {loading ? 'Zapisywanie...' : 'Zapisz zmiany'}
-      </button>
+      {error && <p className={styles.messageError}>{error}</p>}
+      <div className={styles.formGroup}><label htmlFor={`title-${offer.serviceId}`}>Tytuł</label><input id={`title-${offer.serviceId}`} type="text" value={title} onChange={(e) => setTitle(e.target.value)} /></div>
+      <div className={styles.formGroup}><label htmlFor={`desc-${offer.serviceId}`}>Opis</label><textarea id={`desc-${offer.serviceId}`} value={description} onChange={(e) => setDescription(e.target.value)} /></div>
+      <div className={styles.formGroup}><label htmlFor={`benefits-${offer.serviceId}`}>Korzyści</label><textarea id={`benefits-${offer.serviceId}`} value={benefits} onChange={(e) => setBenefits(e.target.value)} /></div>
+      <div className={styles.formGroup}><label htmlFor={`image-${offer.serviceId}`}>Zmień zdjęcie (opcjonalnie)</label><input id={`image-${offer.serviceId}`} type="file" onChange={(e) => setImage(e.target.files[0])} /></div>
+      <button type="submit" disabled={loading} className={styles.submitButton}>{loading ? 'Zapisywanie...' : 'Zapisz zmiany'}</button>
     </form>
   );
 }
-
 
 // ===================================================================
 // GŁÓWNY KOMPONENT STRONY ADMINA
@@ -164,17 +108,17 @@ function OfferEditor({ offer, onUpdate }) {
 export default function AdminOfertaPage() {
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    axios.get(`${BACKEND_URL}/api/offers`)
-      .then(response => {
-        setOffers(response.data);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error("Błąd pobierania ofert:", error);
-        setLoading(false);
-      });
+    const token = localStorage.getItem('token');
+    if (!token) router.push('/login');
+  }, [router]);
+
+  useEffect(() => {
+    api.get('/api/offers')
+      .then(response => { setOffers(response.data); setLoading(false); })
+      .catch(error => { console.error("Błąd pobierania ofert:", error); setLoading(false); });
   }, []);
 
   const handleOfferUpdate = (updatedOffer) => {
@@ -185,23 +129,21 @@ export default function AdminOfertaPage() {
     setOffers([...offers, newOffer]);
   };
 
-  if (loading) return <p className={styles.loadingText}>Ładowanie panelu...</p>;
+  if (loading) return <AdminLayout><p>Ładowanie panelu...</p></AdminLayout>;
 
   return (
-    <div className={styles.pageWrapper}>
-      <div className={styles.container}>
-        <h1 className={styles.header}>Panel Zarządzania Ofertą</h1>
-        
-        <OfferCreator onOfferCreated={handleOfferCreated} />
+    <AdminLayout>
+      <h1 className={styles.header}>Zarządzanie Ofertą</h1>
+      
+      <OfferCreator onOfferCreated={handleOfferCreated} />
 
-        <hr style={{ margin: '60px 0', border: 'none', borderTop: '1px solid #e2e8f0' }} />
+      <hr className={styles.separator} />
 
-        <h2 style={{ fontSize: '2rem', fontWeight: '700', textAlign: 'center', marginBottom: '30px' }}>Edytuj istniejące oferty</h2>
-        
-        {offers.map(offer => (
-          <OfferEditor key={offer.serviceId} offer={offer} onUpdate={handleOfferUpdate} />
-        ))}
-      </div>
-    </div>
+      <h2 className={styles.listHeader}>Edytuj istniejące oferty</h2>
+      
+      {offers.map(offer => (
+        <OfferEditor key={offer.serviceId} offer={offer} onUpdate={handleOfferUpdate} />
+      ))}
+    </AdminLayout>
   );
 }

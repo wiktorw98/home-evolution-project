@@ -1,11 +1,10 @@
 /* frontend/src/app/kontakt/KontaktPage.module.css */
 
 .mainContent {
-    background-color: #f0f7ff; /* Spójne tło */
+    background-color: #f0f7ff;
     padding: 80px 0;
 }
 
-/* ZMIANA: Nowy wrapper dla całego bloku kontaktowego */
 .contactWrapper {
     background-color: #ffffff;
     border-radius: 16px;
@@ -45,7 +44,6 @@
     font-size: 0.9rem;
 }
 
-/* ZMIANA: Nowoczesny styl pól formularza */
 .formGroup input,
 .formGroup textarea {
     width: 100%;
@@ -62,8 +60,7 @@
 .formGroup input:focus,
 .formGroup textarea:focus {
     outline: none;
-    /* ZMIANA: Spójny, niebieski kolor focusa */
-    border-color: #007bff;
+    border-color: #00aaff; /* Ujednolicony kolor */
 }
 
 .formGroup textarea {
@@ -76,8 +73,7 @@
     padding: 15px;
     margin-top: 1rem;
     font-size: 1.1rem;
-    /* ZMIANA: Spójny, niebieski kolor przycisku */
-    background-color: #007bff;
+    background-color: #00aaff; /* Ujednolicony kolor */
     color: white;
     border: none;
     border-radius: 8px;
@@ -87,7 +83,7 @@
 }
 
 .submitButton:hover:not(:disabled) {
-    background-color: #0056b3;
+    background-color: #0088cc; /* Ciemniejszy odcień */
     transform: translateY(-2px);
 }
 
@@ -115,8 +111,7 @@
 }
 
 .detailsContainer a {
-    /* ZMIANA: Spójny, niebieski kolor linków */
-    color: #007bff;
+    color: #00aaff; /* Ujednolicony kolor */
     text-decoration: none;
     font-weight: 500;
 }
@@ -124,6 +119,31 @@
 .detailsHeader {
     margin-top: 2rem;
 }
+
+/* --- NOWE STYLE DLA IKON SPOŁECZNOŚCIOWYCH (identyczne jak w stopce) --- */
+.socialIcons {
+    display: flex;
+    gap: 15px;
+}
+
+.socialIcons a {
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: #c5d1e3;
+    background-color: #2a3a50; /* Ciemne tło, jak w stopce */
+    transition: all 0.3s ease;
+}
+
+.socialIcons a:hover {
+    color: #ffffff;
+    background-color: #00aaff; /* Efekt hover spójny ze stopką */
+}
+
 
 .messageSuccess, .messageError {
     margin-top: 1.5rem;
@@ -137,10 +157,9 @@
 .messageError { background-color: #f8d7da; color: #842029; }
 
 .mapSection {
-    padding-top: 0; /* Mapa teraz przylega do stopki */
+    padding-top: 0;
 }
 
-/* ZMIANA: Nowe style dla mapy */
 .mapFrame {
     border: 0;
     display: block;

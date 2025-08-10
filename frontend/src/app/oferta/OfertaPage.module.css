@@ -1,23 +1,16 @@
 /* frontend/src/app/oferta/OfertaPage.module.css */
 
-/* === GŁÓWNA ZAWARTOŚĆ STRONY === */
 .mainContent {
     padding: 80px 0;
-    /* 
-      TUTAJ ZNAJDUJE SIĘ KLUCZOWA ZMIANA:
-      Nadajemy tłu subtelny, ale wyraźny kolor.
-      To "odklei" białe karty od tła i nada stronie strukturę.
-    */
-    background-color: #f0f7ff; /* Jasnoniebieskie, "powietrzne" tło */
+    background-color: #f0f7ff;
 }
 
 .offerList {
     display: flex;
     flex-direction: column;
-    gap: 5rem; /* Zwiększony odstęp między kartami */
+    gap: 5rem;
 }
 
-/* === STYL KARTY OFERTY (BEZ ZMIAN) === */
 .offerCard {
     display: flex;
     gap: 60px;
@@ -80,14 +73,13 @@
 }
 
 .benefitIcon {
-    color: #28a745;
+    /* ZMIANA: Ujednolicamy kolor ikony z naszym kolorem marki */
+    color: #00aaff;
     font-size: 1.2rem;
     margin-top: 2px;
     flex-shrink: 0;
 }
 
-
-/* === MEDIA QUERIES (BEZ ZMIAN) === */
 @media (max-width: 992px) {
     .offerCard,
     .offerCard.reverse {

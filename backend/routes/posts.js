@@ -1,19 +1,18 @@
 // backend/routes/posts.js
-
 const express = require('express');
 const router = express.Router();
 const postController = require('../controllers/postController');
-
-// Definiujemy ścieżki i przypisujemy je do funkcji z kontrolera
+const upload = require('../middleware/upload'); // Zakładam, że masz ten plik z poprzednich kroków
 
 // GET /api/posts -> Pobierz wszystkie posty
 router.get('/', postController.getAllPosts);
 
-// NOWA TRASA: GET /api/posts/:id -> Pobierz jeden post po jego ID
+// GET /api/posts/:id -> Pobierz jeden post po jego ID
 router.get('/:id', postController.getPostById);
 
-// POST /api/posts -> Stwórz nowy post
-router.post('/', postController.createPost);
+// ZMIANA: Używamy .array() zamiast .single()
+// 'images' to nazwa pola w formularzu, a 10 to maksymalna liczba plików.
+router.post('/', upload.array('images', 10), postController.createPost);
 
 // DELETE /api/posts/:id -> Usuń post o konkretnym ID
 router.delete('/:id', postController.deletePost);

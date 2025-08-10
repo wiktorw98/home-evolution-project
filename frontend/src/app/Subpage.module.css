@@ -8,10 +8,6 @@
 
 .pageHeader {
     background-color: #2a3a50;
-    /* 
-      ZMIANA: Zmniejszamy padding, aby nagłówek był bardziej zwarty.
-      Używamy pełnego zapisu dla czytelności: góra, boki, dół.
-    */
     padding: 100px 0 50px 0; 
     text-align: center;
     border-bottom: none;
@@ -49,14 +45,24 @@
     line-height: 1.6;
 }
 
-/* Pozostałe style bez zmian */
-.mainContent { padding: 80px 0; }
-.infoText { text-align: center; font-size: 1.2rem; padding: 50px 0; color: #6c757d; }
-.errorText { color: #e53e3e; font-weight: 500; }
+.mainContent {
+    padding: 80px 0;
+}
+
+.infoText {
+    text-align: center;
+    font-size: 1.2rem;
+    padding: 50px 0;
+    color: #6c757d;
+}
+
+.errorText {
+    color: #e53e3e;
+    font-weight: 500;
+}
 
 @media (max-width: 768px) {
     .pageHeader {
-        /* ZMIANA: Dostosowujemy padding również dla mniejszych ekranów */
         padding: 90px 0 40px 0;
     }
     .pageHeader h1 {

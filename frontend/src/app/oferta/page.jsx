@@ -5,10 +5,9 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { BsCheckCircleFill } from 'react-icons/bs';
 import pageStyles from '../Subpage.module.css';
 import offerStyles from './OfertaPage.module.css';
-// Importujemy ikonę, która zastąpi standardowy "ptaszek"
-import { BsCheckCircleFill } from 'react-icons/bs';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -55,7 +54,6 @@ export default function OfertaPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.6, ease: 'easeOut' }}
-                // Dodajemy efekt "uniesienia" po najechaniu myszką
                 whileHover={{ y: -8, boxShadow: '0 20px 35px rgba(45, 55, 72, 0.1)' }}
               >
                 <div className={offerStyles.offerImage}>

@@ -1,26 +1,25 @@
 /* frontend/src/app/realizacje/RealizacjePage.module.css */
 
 .mainContent {
-    /* ZMIANA: Ustawiamy nasze spójne, jasnoniebieskie tło */
     background-color: #f0f7ff;
     padding: 80px 0;
 }
 
 .galleryGrid {
     display: grid;
-    /* ZMIANA: Tworzymy responsywną siatkę */
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 2rem;
 }
 
 .galleryCard {
     position: relative;
-    aspect-ratio: 16 / 10; /* Utrzymuje proporcje karty */
+    aspect-ratio: 16 / 10;
     border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    -webkit-transform: translateZ(0); /* Poprawka dla płynności animacji w Safari */
+    /* Nowoczesna optymalizacja animacji */
+    will-change: transform;
 }
 
 .imageContainer {
@@ -32,12 +31,12 @@
 }
 
 .image {
-    object-fit: cover; /* Gwarantuje, że obraz wypełni kontener bez zniekształceń */
+    object-fit: cover;
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .galleryCard:hover .image {
-    transform: scale(1.1); /* Efekt delikatnego powiększenia zdjęcia */
+    transform: scale(1.1);
 }
 
 .overlay {
@@ -51,7 +50,6 @@
     justify-content: space-between;
     padding: 1.5rem;
     color: #ffffff;
-    /* ZMIANA: Elegancki gradient, który zapewnia czytelność tekstu */
     background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 60%);
 }
 
@@ -67,13 +65,15 @@
 }
 
 .categoryTag {
-    background-color: rgba(0, 170, 255, 0.8);
+    /* ZMIANA: Używamy naszego spójnego koloru marki */
+    background-color: #00aaff;
     color: #fff;
     padding: 4px 10px;
     border-radius: 20px;
     font-size: 0.8rem;
     font-weight: 600;
     text-transform: uppercase;
+    display: inline-block; /* Potrzebne dla poprawnego renderowania */
 }
 
 .cardContent h3 {

@@ -1,8 +1,8 @@
 // backend/controllers/postController.js
-
 const Post = require('../models/Post');
+const fs = require('fs'); // Importujemy moduł 'fs' do operacji na plikach
 
-// --- Pobieranie wszystkich postów (BEZ ZMIAN) ---
+// Funkcja getAllPosts i getPostById pozostają bez zmian
 exports.getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find().sort({ createdAt: -1 });
@@ -11,8 +11,6 @@ exports.getAllPosts = async (req, res) => {
     res.status(500).json({ message: 'Błąd serwera przy pobieraniu postów.' });
   }
 };
-
-// === NOWA FUNKCJA: POBIERANIE JEDNEGO POSTA PO ID ===
 exports.getPostById = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
@@ -21,19 +19,21 @@ exports.getPostById = async (req, res) => {
     }
     res.json(post);
   } catch (err) {
-    console.error('Błąd przy pobieraniu pojedynczego posta:', err);
     res.status(500).json({ message: 'Błąd serwera' });
   }
 };
 
-// --- Tworzenie nowego posta (BEZ ZMIAN) ---
+// --- ZMIANA: Aktualizujemy funkcję tworzenia posta ---
 exports.createPost = async (req, res) => {
-  const { title, content, imageUrl } = req.body;
+  const { title, content } = req.body;
+  
+  // Pobieramy tablicę ścieżek do zapisanych plików z req.files (dzięki multerowi)
+  const images = req.files ? req.files.map(file => file.path) : [];
 
   const newPost = new Post({
     title,
     content,
-    imageUrl
+    images // Zapisujemy nową tablicę ścieżek
   });
 
   try {
@@ -44,12 +44,21 @@ exports.createPost = async (req, res) => {
   }
 };
 
-// --- Usuwanie posta (BEZ ZMIAN) ---
+// --- ZMIANA: Aktualizujemy funkcję usuwania posta, aby usuwała też pliki ---
 exports.deletePost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post) {
       return res.status(404).json({ message: 'Nie znaleziono posta.' });
+    }
+
+    // Usuwamy wszystkie powiązane obrazy z serwera
+    if (post.images && post.images.length > 0) {
+      post.images.forEach(imagePath => {
+        fs.unlink(imagePath, (err) => {
+          if (err) console.error(`Błąd przy usuwaniu pliku ${imagePath}:`, err);
+        });
+      });
     }
 
     await post.deleteOne();

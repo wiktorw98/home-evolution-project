@@ -1,98 +1,79 @@
 // backend/server.js
 
-// Importowanie bibliotek
+// KROK 1: Ładujemy zmienne środowiskowe jako absolutny priorytet
+require('dotenv').config();
+
+// KROK 2: Importujemy wszystkie potrzebne biblioteki i moduły
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
-require('dotenv').config(); // Ładuje zmienne z pliku .env
+const bcrypt = require('bcryptjs');
 
-// Inicjalizacja aplikacji Express
+// Importujemy nasze modele
+const User = require('./models/User');
+const Offer = require('./models/Offer');
+
+// Importujemy nasze trasy
+const postRoutes = require('./routes/posts');
+const realizationRoutes = require('./routes/realizations');
+const formRoutes = require('./routes/forms');
+const offerRoutes = require('./routes/offers');
+const authRoutes = require('./routes/auth');
+
+// KROK 3: Inicjalizujemy aplikację Express
 const app = express();
 
-// --- Middleware (funkcje pośredniczące) ---
-app.use(cors()); // Umożliwia zapytania z innych domen (naszego frontendu)
-app.use(express.json()); // Pozwala serwerowi rozumieć dane w formacie JSON
+// KROK 4: Konfigurujemy Middleware
+app.use(cors());
+app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Udostępnianie folderu z wgranymi zdjęciami
-// Dzięki temu frontend będzie mógł wyświetlać zdjęcia
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
-
-
-// --- Definicje Ścieżek (Routes) ---
-const postRoutes = require('./routes/posts');
+// KROK 5: Podłączamy nasze trasy API
 app.use('/api/posts', postRoutes);
-
-const realizationRoutes = require('./routes/realizations');
 app.use('/api/realizations', realizationRoutes);
-
-const formRoutes = require('./routes/forms');
 app.use('/api/forms', formRoutes);
-
-// NOWA ŚCIEŻKA DLA OFERT
-const offerRoutes = require('./routes/offers');
 app.use('/api/offers', offerRoutes);
+app.use('/api/auth', authRoutes);
 
 
-// --- Połączenie z Bazą Danych MongoDB ---
-mongoose.connect(process.env.MONGO_URI)
-.then(() => {
-  console.log('Połączono z MongoDB!');
-  // Po udanym połączeniu, uruchom funkcję inicjalizującą dane dla ofert
-  initializeOffers(); 
-})
-.catch(err => console.error('Błąd połączenia z MongoDB:', err));
+// --- Funkcja do jednorazowego stworzenia konta admina ---
+const initializeAdmin = async () => {
+  try {
+    const userCount = await User.countDocuments();
+    if (userCount === 0) {
+      console.log('Brak użytkowników w bazie. Tworzę domyślne konto admina...');
+      
+      const username = 'admin';
+      const password = 'admin'; // Pamiętaj, aby zmienić to hasło!
+      
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
 
+      const adminUser = new User({
+        username,
+        password: hashedPassword,
+      });
 
-// --- Funkcja do jednorazowego dodania danych ofert do bazy ---
-// Ta funkcja sprawdzi, czy w bazie są już oferty. Jeśli nie, doda je.
-const Offer = require('./models/Offer'); // Upewnij się, że masz plik models/Offer.js
+      await adminUser.save();
+      console.log(`Stworzono konto admina: login - ${username}, hasło - ${password}`);
+    }
+  } catch (error) {
+    console.error('Błąd podczas inicjalizacji konta admina:', error);
+  }
+};
 
+// --- Funkcja inicjalizująca oferty ---
 const initializeOffers = async () => {
   try {
     const count = await Offer.countDocuments();
     if (count === 0) {
       console.log('Baza danych ofert jest pusta. Inicjalizuję dane startowe...');
-      
       const initialData = [
-        { 
-          serviceId: "fotowoltaika", 
-          title: "Panele Fotowoltaiczne", 
-          description: "Inwestycja w fotowoltaikę to krok w stronę niezależności energetycznej i znacznych oszczędności. Produkuj własny, darmowy prąd ze słońca, dbając jednocześnie o środowisko.",
-          benefits: [
-            "Obniżenie rachunków za prąd nawet o 90%",
-            "Niezależność od podwyżek cen energii",
-            "Zwiększenie wartości nieruchomości",
-            "Rozwiązanie ekologiczne i bezobsługowe"
-          ], 
-          imageUrl: "uploads/oferta-fotowoltaika.jpg" // Upewnij się, że masz ten plik w /uploads
-        },
-        { 
-          serviceId: "ocieplenie", 
-          title: "Ocieplenie i Termomodernizacja", 
-          description: "Prawidłowo wykonana termoizolacja budynku to klucz do komfortu cieplnego przez cały rok i niższych kosztów ogrzewania. Używamy tylko sprawdzonych materiałów, gwarantując najwyższą jakość.",
-          benefits: [
-            "Redukcja strat ciepła zimą do 30%",
-            "Ochrona przed upałami latem",
-            "Poprawa estetyki i odświeżenie elewacji",
-            "Zabezpieczenie konstrukcji budynku"
-          ], 
-          imageUrl: "uploads/oferta-ocieplenie.jpg" // Upewnij się, że masz ten plik w /uploads
-        },
-        { 
-          serviceId: "kotly", 
-          title: "Wymiana Źródeł Ciepła", 
-          description: "Wymień stary, nieefektywny kocioł na nowoczesne, ekologiczne źródło ciepła. Oferujemy kompleksowe doradztwo i montaż pomp ciepła, kotłów gazowych oraz kotłów na pellet.",
-          benefits: [
-            "Znaczne obniżenie kosztów ogrzewania",
-            "Spełnienie norm ekologicznych i uniknięcie kar",
-            "Wygoda i bezpieczeństwo użytkowania",
-            "Możliwość uzyskania dofinansowania"
-          ], 
-          imageUrl: "uploads/oferta-kotly.jpg" // Upewnij się, że masz ten plik w /uploads
-        }
+        { serviceId: "fotowoltaika", title: "Panele Fotowoltaiczne", description: "Inwestycja w fotowoltaikę to krok w stronę niezależności energetycznej i znacznych oszczędności...", benefits: ["Obniżenie rachunków za prąd nawet o 90%", "Niezależność od podwyżek cen energii", "Zwiększenie wartości nieruchomości", "Rozwiązanie ekologiczne i bezobsługowe"], imageUrl: "uploads/oferta-fotowoltaika.jpg" },
+        { serviceId: "ocieplenie", title: "Ocieplenie i Termomodernizacja", description: "Prawidłowo wykonana termoizolacja budynku to klucz do komfortu cieplnego...", benefits: ["Redukcja strat ciepła zimą do 30%", "Ochrona przed upałami latem", "Poprawa estetyki i odświeżenie elewacji", "Zabezpieczenie konstrukcji budynku"], imageUrl: "uploads/oferta-ocieplenie.jpg" },
+        { serviceId: "kotly", title: "Wymiana Źródeł Ciepła", description: "Wymień stary, nieefektywny kocioł na nowoczesne, ekologiczne źródło ciepła...", benefits: ["Znaczne obniżenie kosztów ogrzewania", "Spełnienie norm ekologicznych i uniknięcie kar", "Wygoda i bezpieczeństwo użytkowania", "Możliwość uzyskania dofinansowania"], imageUrl: "uploads/oferta-kotly.jpg" }
       ];
-      
       await Offer.insertMany(initialData);
       console.log('Dane startowe dla ofert zostały pomyślnie dodane.');
     }
@@ -102,8 +83,21 @@ const initializeOffers = async () => {
 };
 
 
-// --- Uruchomienie Serwera ---
+// --- Połączenie z Bazą Danych i Uruchomienie Serwera ---
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Serwer działa na porcie ${PORT}`);
-});
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log('Połączono z MongoDB!');
+    // Uruchamiamy serwer DOPIERO po udanym połączeniu z bazą
+    app.listen(PORT, () => {
+      console.log(`Serwer działa na porcie ${PORT}`);
+      // Uruchamiamy funkcje inicjalizujące po starcie serwera
+      initializeOffers(); 
+      initializeAdmin();
+    });
+  })
+  .catch(err => {
+    console.error('Krytyczny błąd połączenia z MongoDB:', err);
+    process.exit(1); // Zakończ proces, jeśli nie można połączyć się z bazą
+  });

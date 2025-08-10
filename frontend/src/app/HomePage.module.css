@@ -1,3 +1,5 @@
+/* frontend/src/app/HomePage.module.css */
+
 .main {
   width: 100%;
 }
@@ -11,7 +13,6 @@
   justify-content: center;
   text-align: center;
   color: white;
-  /* POPRAWKA ZNAJDUJE SIĘ W TEJ LINII */
   background: url('/hero-bg.jpg') no-repeat center center/cover;
 }
 
@@ -21,7 +22,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(5, 15, 30, 0.6); /* Ciemniejsza nakładka dla lepszego kontrastu */
+  background-color: rgba(5, 15, 30, 0.6);
   z-index: 1;
 }
 
@@ -36,16 +37,16 @@
 }
 
 .heroTitle {
-  font-size: 3.5rem; /* Zwiększony rozmiar dla większego impaktu */
-  font-weight: 800; /* Grubsza czcionka */
+  font-size: 3.5rem;
+  font-weight: 800;
   margin-bottom: 1rem;
   line-height: 1.2;
-  text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5); /* Cień dla lepszej czytelności */
+  text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
 }
 
 .heroSubtitle {
   font-size: 1.25rem;
-  font-weight: 300; /* Lżejsza czcionka dla kontrastu */
+  font-weight: 300;
   max-width: 600px;
   margin-bottom: 2rem;
   line-height: 1.6;
@@ -53,20 +54,19 @@
 }
 
 .heroButton {
-  background-color: #007bff; /* Główny kolor akcji */
+  /* ZMIANA: Ujednolicamy kolor przycisku z naszym kolorem marki */
+  background-color: #00aaff;
   color: white;
   border: none;
   padding: 15px 35px;
   font-size: 1rem;
   font-weight: 600;
-  border-radius: 50px; /* Zaokrąglone rogi dla nowoczesnego wyglądu */
+  border-radius: 50px;
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 1px;
-  transition: all 0.3s ease-in-out; /* Płynne przejście dla wszystkich właściwości */
+  transition: all 0.3s ease-in-out;
 }
-
-/* Efekt hover zdefiniowany w komponencie JSX za pomocą `whileHover` */
 
 @media (max-width: 768px) {
   .heroTitle {
