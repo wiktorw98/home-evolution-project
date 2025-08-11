@@ -6,9 +6,6 @@ import api from '../../../utils/axiosConfig';
 import AdminLayout from '../AdminLayout';
 import styles from './AdminOferta.module.css';
 
-// ===================================================================
-// KOMPONENT 1: Formularz do TWORZENIA nowej oferty
-// ===================================================================
 function OfferCreator({ onOfferCreated }) {
   const [serviceId, setServiceId] = useState('');
   const [title, setTitle] = useState('');
@@ -32,11 +29,12 @@ function OfferCreator({ onOfferCreated }) {
     formData.append('image', image);
 
     try {
-      const response = await api.post('/api/offers', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      // ZMIANA: Usunięto ręczne ustawianie nagłówka
+      const response = await api.post('/api/offers', formData);
       alert('Nowa oferta została dodana!');
       onOfferCreated(response.data);
-      // Resetowanie formularza
-      setServiceId(''); setTitle(''); setDescription(''); setBenefits(''); setImage(null); e.target.reset();
+      e.target.reset();
+      setServiceId(''); setTitle(''); setDescription(''); setBenefits(''); setImage(null);
     } catch (err) {
       setError(err.response?.data?.message || 'Wystąpił błąd serwera.');
     } finally {
@@ -58,9 +56,6 @@ function OfferCreator({ onOfferCreated }) {
   );
 }
 
-// ===================================================================
-// KOMPONENT 2: Formularz do EDYCJI istniejącej oferty
-// ===================================================================
 function OfferEditor({ offer, onUpdate }) {
   const [title, setTitle] = useState(offer.title);
   const [description, setDescription] = useState(offer.description);
@@ -79,7 +74,8 @@ function OfferEditor({ offer, onUpdate }) {
     benefits.split('\n').forEach(b => formData.append('benefits[]', b.trim()));
     if (image) formData.append('image', image);
     try {
-      const response = await api.put(`/api/offers/${offer.serviceId}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      // ZMIANA: Usunięto ręczne ustawianie nagłówka
+      const response = await api.put(`/api/offers/${offer.serviceId}`, formData);
       alert('Oferta zaktualizowana pomyślnie!');
       onUpdate(response.data);
     } catch (err) {
@@ -102,9 +98,6 @@ function OfferEditor({ offer, onUpdate }) {
   );
 }
 
-// ===================================================================
-// GŁÓWNY KOMPONENT STRONY ADMINA
-// ===================================================================
 export default function AdminOfertaPage() {
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -134,16 +127,10 @@ export default function AdminOfertaPage() {
   return (
     <AdminLayout>
       <h1 className={styles.header}>Zarządzanie Ofertą</h1>
-      
       <OfferCreator onOfferCreated={handleOfferCreated} />
-
       <hr className={styles.separator} />
-
       <h2 className={styles.listHeader}>Edytuj istniejące oferty</h2>
-      
-      {offers.map(offer => (
-        <OfferEditor key={offer.serviceId} offer={offer} onUpdate={handleOfferUpdate} />
-      ))}
+      {offers.map(offer => (<OfferEditor key={offer.serviceId} offer={offer} onUpdate={handleOfferUpdate} />))}
     </AdminLayout>
   );
 }

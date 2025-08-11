@@ -9,7 +9,7 @@ import styles from './AdminBlog.module.css';
 export default function AdminBlogPage() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [images, setImages] = useState([]); // ZMIANA: Stan dla wielu obrazów
+  const [images, setImages] = useState([]);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -24,7 +24,8 @@ export default function AdminBlogPage() {
   const fetchPosts = async () => {
     try {
       const response = await api.get('/api/posts');
-      setPosts(response.data);
+      // Zakładając, że paginacja zwraca obiekt { posts: [...] }
+      setPosts(response.data.posts || []);
     } catch (err) { setError("Nie udało się załadować listy postów."); }
   };
 
@@ -39,13 +40,13 @@ export default function AdminBlogPage() {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('content', content);
-    // ZMIANA: Dodajemy każdy plik do formData
     for (let i = 0; i < images.length; i++) {
       formData.append('images', images[i]);
     }
 
     try {
-      const response = await api.post('/api/posts', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      // ZMIANA: Usunięto ręczne ustawianie nagłówka
+      const response = await api.post('/api/posts', formData);
       setPosts([response.data, ...posts]);
       setSuccess('Post został dodany pomyślnie!');
       setTitle('');
@@ -74,7 +75,6 @@ export default function AdminBlogPage() {
         {success && <p className={styles.messageSuccess}>{success}</p>}
         <div className={styles.formGroup}><label htmlFor="title">Tytuł</label><input id="title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} required /></div>
         <div className={styles.formGroup}><label htmlFor="content">Treść</label><textarea id="content" value={content} onChange={(e) => setContent(e.target.value)} rows="10" required /></div>
-        {/* ZMIANA: Pole do wgrywania wielu plików */}
         <div className={styles.formGroup}><label htmlFor="images">Zdjęcia (opcjonalnie, max 10)</label><input id="images" type="file" multiple onChange={(e) => setImages(e.target.files)} /></div>
         <button type="submit" disabled={loading} className={styles.submitButton}>{loading ? 'Dodawanie...' : 'Opublikuj post'}</button>
       </form>
