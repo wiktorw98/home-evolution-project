@@ -5,7 +5,6 @@
     padding: 80px 0;
 }
 
-/* === NOWE STYLE DLA PASKU FILTRÓW === */
 .filterBar {
     display: flex;
     justify-content: center;
@@ -37,7 +36,6 @@
     border-color: #00aaff;
 }
 
-/* === STYLE GALERII (BEZ ZMIAN) === */
 .galleryGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -78,14 +76,18 @@
     width: 100%;
     height: 100%;
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    /* ZMIANA: Wyrównujemy wszystko do dolnej krawędzi */
+    align-items: flex-end;
     padding: 1.5rem;
     color: #ffffff;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 60%);
 }
 
 .cardContent {
+    flex-grow: 1; /* Pozwala temu elementowi zająć dostępną przestrzeń */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Wyrównuje treść do dołu wewnątrz tego kontenera */
     transform: translateY(20px);
     opacity: 0;
     transition: transform 0.4s ease, opacity 0.4s ease;
@@ -105,33 +107,40 @@
     font-weight: 600;
     text-transform: uppercase;
     display: inline-block;
+    align-self: flex-start; /* Wyrównuje do lewej */
 }
 
 .cardContent h3 {
-    margin: 0.75rem 0 0 0;
+    margin: 0.5rem 0 0 0; /* Zmniejszony margines */
     font-size: 1.5rem;
     font-weight: 700;
     line-height: 1.3;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
-.plusIcon {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    color: rgba(255, 255, 255, 0.8);
-    transform: scale(0.8);
+.plusIconWrapper {
+    /* Ten wrapper zapewnia, że ikona nie będzie się rozciągać */
     opacity: 0;
-    transition: all 0.4s ease;
+    transition: opacity 0.4s ease;
 }
 
-.galleryCard:hover .plusIcon {
-    transform: scale(1);
+.galleryCard:hover .plusIconWrapper {
     opacity: 1;
+}
+
+.plusIcon {
+    color: rgba(255, 255, 255, 0.8);
+    transition: all 0.4s ease;
 }
 
 @media (max-width: 768px) {
     .galleryGrid {
         grid-template-columns: 1fr;
     }
+}
+
+.cardLink {
+  display: block;
+  text-decoration: none;
+  color: inherit;
 }

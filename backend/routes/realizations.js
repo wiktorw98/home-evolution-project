@@ -1,26 +1,13 @@
 // backend/routes/realizations.js
-
 const express = require('express');
 const router = express.Router();
 const realizationController = require('../controllers/realizationController');
+const upload = require('../middleware/upload'); // Używamy naszego reużywalnego middleware
 
-// Potrzebujemy dostępu do naszej konfiguracji 'multer' z server.js
-// Prostszym sposobem będzie ponowne skonfigurowanie go tutaj
-const multer = require('multer');
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => { cb(null, 'uploads/'); },
-  filename: (req, file, cb) => { cb(null, Date.now() + '-' + file.originalname); }
-});
-const upload = multer({ storage: storage });
-
-
-// GET /api/realizations -> Pobierz wszystkie realizacje
 router.get('/', realizationController.getAllRealizations);
-
-// POST /api/realizations -> Stwórz nową realizację, przechwytując jeden plik z pola 'image'
+router.get('/:id', realizationController.getRealizationById); // NOWA TRASA
 router.post('/', upload.single('image'), realizationController.createRealization);
-
-// DELETE /api/realizations/:id -> Usuń realizację
+router.put('/:id', upload.single('image'), realizationController.updateRealization); // NOWA TRASA
 router.delete('/:id', realizationController.deleteRealization);
 
 module.exports = router;
