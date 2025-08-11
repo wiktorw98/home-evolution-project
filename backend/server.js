@@ -9,7 +9,6 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 const bcrypt = require('bcryptjs');
-const userRoutes = require('./routes/users');
 
 // Importujemy nasze modele
 const User = require('./models/User');
@@ -21,6 +20,7 @@ const realizationRoutes = require('./routes/realizations');
 const formRoutes = require('./routes/forms');
 const offerRoutes = require('./routes/offers');
 const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/users');
 
 // KROK 3: Inicjalizujemy aplikację Express
 const app = express();
@@ -47,7 +47,7 @@ const initializeAdmin = async () => {
       console.log('Brak użytkowników w bazie. Tworzę domyślne konto admina...');
       
       const username = 'admin';
-      const password = 'admin'; // Pamiętaj, aby zmienić to hasło!
+      const password = 'admin';
       
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
@@ -72,9 +72,43 @@ const initializeOffers = async () => {
     if (count === 0) {
       console.log('Baza danych ofert jest pusta. Inicjalizuję dane startowe...');
       const initialData = [
-        { serviceId: "fotowoltaika", title: "Panele Fotowoltaiczne", description: "Inwestycja w fotowoltaikę to krok w stronę niezależności energetycznej i znacznych oszczędności...", benefits: ["Obniżenie rachunków za prąd nawet o 90%", "Niezależność od podwyżek cen energii", "Zwiększenie wartości nieruchomości", "Rozwiązanie ekologiczne i bezobsługowe"], imageUrl: "uploads/oferta-fotowoltaika.jpg" },
-        { serviceId: "ocieplenie", title: "Ocieplenie i Termomodernizacja", description: "Prawidłowo wykonana termoizolacja budynku to klucz do komfortu cieplnego...", benefits: ["Redukcja strat ciepła zimą do 30%", "Ochrona przed upałami latem", "Poprawa estetyki i odświeżenie elewacji", "Zabezpieczenie konstrukcji budynku"], imageUrl: "uploads/oferta-ocieplenie.jpg" },
-        { serviceId: "kotly", title: "Wymiana Źródeł Ciepła", description: "Wymień stary, nieefektywny kocioł na nowoczesne, ekologiczne źródło ciepła...", benefits: ["Znaczne obniżenie kosztów ogrzewania", "Spełnienie norm ekologicznych i uniknięcie kar", "Wygoda i bezpieczeństwo użytkowania", "Możliwość uzyskania dofinansowania"], imageUrl: "uploads/oferta-kotly.jpg" }
+        { 
+          serviceId: "fotowoltaika", 
+          title: "Panele Fotowoltaiczne", 
+          description: "Inwestycja w fotowoltaikę to krok w stronę niezależności energetycznej i znacznych oszczędności. Produkuj własny, darmowy prąd ze słońca, dbając jednocześnie o środowisko.",
+          benefits: [
+            "Obniżenie rachunków za prąd nawet o 90%",
+            "Niezależność od podwyżek cen energii",
+            "Zwiększenie wartości nieruchomości",
+            "Rozwiązanie ekologiczne i bezobsługowe"
+          ], 
+          // Upewniamy się, że ścieżka jest poprawna
+          imageUrl: "uploads/oferta-fotowoltaika.jpg" 
+        },
+        { 
+          serviceId: "ocieplenie", 
+          title: "Ocieplenie i Termomodernizacja", 
+          description: "Prawidłowo wykonana termoizolacja budynku to klucz do komfortu cieplnego przez cały rok i niższych kosztów ogrzewania. Używamy tylko sprawdzonych materiałów, gwarantując najwyższą jakość.",
+          benefits: [
+            "Redukcja strat ciepła zimą do 30%",
+            "Ochrona przed upałami latem",
+            "Poprawa estetyki i odświeżenie elewacji",
+            "Zabezpieczenie konstrukcji budynku"
+          ], 
+          imageUrl: "uploads/oferta-ocieplenie.jpg"
+        },
+        { 
+          serviceId: "kotly", 
+          title: "Wymiana Źródeł Ciepła", 
+          description: "Wymień stary, nieefektywny kocioł na nowoczesne, ekologiczne źródło ciepła. Oferujemy kompleksowe doradztwo i montaż pomp ciepła, kotłów gazowych oraz kotłów na pellet.",
+          benefits: [
+            "Znaczne obniżenie kosztów ogrzewania",
+            "Spełnienie norm ekologicznych i uniknięcie kar",
+            "Wygoda i bezpieczeństwo użytkowania",
+            "Możliwość uzyskania dofinansowania"
+          ], 
+          imageUrl: "uploads/oferta-kotly.jpg"
+        }
       ];
       await Offer.insertMany(initialData);
       console.log('Dane startowe dla ofert zostały pomyślnie dodane.');
@@ -91,15 +125,13 @@ const PORT = process.env.PORT || 5000;
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('Połączono z MongoDB!');
-    // Uruchamiamy serwer DOPIERO po udanym połączeniu z bazą
     app.listen(PORT, () => {
       console.log(`Serwer działa na porcie ${PORT}`);
-      // Uruchamiamy funkcje inicjalizujące po starcie serwera
       initializeOffers(); 
       initializeAdmin();
     });
   })
   .catch(err => {
     console.error('Krytyczny błąd połączenia z MongoDB:', err);
-    process.exit(1); // Zakończ proces, jeśli nie można połączyć się z bazą
+    process.exit(1);
   });

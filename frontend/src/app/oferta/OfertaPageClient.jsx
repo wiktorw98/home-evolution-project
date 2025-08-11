@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
-import Link from 'next/link'; // ZMIANA: Importujemy Link
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { BsCheckCircleFill } from 'react-icons/bs';
 import pageStyles from '../Subpage.module.css';
@@ -38,12 +38,7 @@ export default function OfertaPageClient() {
           {error && <p className={`${pageStyles.infoText} ${pageStyles.errorText}`}>{error}</p>}
           <div className={offerStyles.offerList}>
             {!loading && !error && offers.map((service, index) => (
-              // ZMIANA: Opakowujemy całą kartę w komponent Link
-              <Link 
-                key={service.serviceId} 
-                href={`/kontakt?zainteresowanie=${encodeURIComponent(service.title)}`} 
-                className={offerStyles.cardLink}
-              >
+              <Link key={service.serviceId} href={`/kontakt?zainteresowanie=${encodeURIComponent(service.title)}`} className={offerStyles.cardLink}>
                 <motion.section 
                   id={service.serviceId} 
                   className={`${offerStyles.offerCard} ${index % 2 !== 0 ? offerStyles.reverse : ''}`}
@@ -53,7 +48,16 @@ export default function OfertaPageClient() {
                   transition={{ duration: 0.6, ease: 'easeOut' }}
                   whileHover={{ y: -8, boxShadow: '0 20px 35px rgba(45, 55, 72, 0.1)' }}
                 >
-                  <div className={offerStyles.offerImage}><Image src={`${BACKEND_URL}/${service.imageUrl}`} alt={service.title} width={550} height={370} className={offerStyles.image} /></div>
+                  {/* ZMIANA: Używamy atrybutu 'fill' w komponencie Image */}
+                  <div className={offerStyles.offerImage}>
+                    <Image 
+                      src={`${BACKEND_URL}/${service.imageUrl}`} 
+                      alt={service.title} 
+                      fill
+                      sizes="(max-width: 768px) 90vw, 40vw"
+                      className={offerStyles.image} 
+                    />
+                  </div>
                   <div className={offerStyles.offerContent}>
                     <h2>{service.title}</h2>
                     <p>{service.description}</p>

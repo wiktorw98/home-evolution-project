@@ -1,15 +1,12 @@
 /* frontend/src/app/realizacje/[realizationId]/RealizationDetail.module.css */
 
-/* Usunęliśmy wszystkie style nagłówka, bo nie są już potrzebne */
-
 .mainContent {
   background-color: #f8f9fa;
   padding: 80px 0;
 }
 
-/* === NOWE STYLE DLA KATEGORII W GŁÓWNEJ TREŚCI === */
 .categoryContainer {
-  margin-bottom: 2.5rem; /* Odstęp od siatki poniżej */
+  margin-bottom: 2.5rem;
 }
 
 .categoryLink {
@@ -29,7 +26,6 @@
   background-color: #d1f0ff;
 }
 
-/* === POZOSTAŁE STYLE BEZ ZMIAN === */
 .contentGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -37,8 +33,12 @@
   align-items: flex-start;
 }
 
-.imageColumn {
-  position: relative;
+/* ZMIANA: Zmieniamy nazwę z .imageColumn na .galleryColumn dla jasności */
+.galleryColumn {
+  /* ZMIANA: Dodajemy display: grid, aby poprawnie układać zdjęcia */
+  display: grid;
+  grid-template-columns: 1fr; /* Domyślnie jedna kolumna */
+  gap: 1rem; /* Odstęp między zdjęciami w galerii */
 }
 
 .imageWrapper {
