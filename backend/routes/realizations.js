@@ -8,6 +8,7 @@ router.get('/', realizationController.getAllRealizations);
 router.get('/:id', realizationController.getRealizationById);
 // ZMIANA: Używamy .array() do obsługi wielu plików
 router.post('/', upload.array('images', 10), realizationController.createRealization);
+// ZMIANA: Używamy .array() również przy aktualizacji
 router.put('/:id', upload.array('images', 10), realizationController.updateRealization);
 router.delete('/:id', realizationController.deleteRealization);
 
