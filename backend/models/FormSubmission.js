@@ -6,6 +6,8 @@ const formSubmissionSchema = new mongoose.Schema({
   email: { type: String, required: true },
   phone: { type: String },
   message: { type: String, required: true },
+  // NOWE POLE
+  interest: { type: String, default: 'Zapytanie ogólne' },
   submittedAt: { type: Date, default: Date.now },
 });
 

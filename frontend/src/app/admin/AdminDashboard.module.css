@@ -11,4 +11,5 @@
 .navCard { display: block; background: #fff; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-decoration: none; color: inherit; transition: transform 0.3s, box-shadow 0.3s; }
 .navCard:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
 .navCard h3 { font-size: 1.3rem; color: #00aaff; margin-bottom: 0.5rem; }
+.settingsCard h3 {color: #f56565;}
 .navCard p { color: #4a5568; margin: 0; }

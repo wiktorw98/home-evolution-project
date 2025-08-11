@@ -9,6 +9,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 const bcrypt = require('bcryptjs');
+const userRoutes = require('./routes/users');
 
 // Importujemy nasze modele
 const User = require('./models/User');
@@ -35,6 +36,7 @@ app.use('/api/realizations', realizationRoutes);
 app.use('/api/forms', formRoutes);
 app.use('/api/offers', offerRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 
 
 // --- Funkcja do jednorazowego stworzenia konta admina ---

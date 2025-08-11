@@ -103,3 +103,8 @@
         padding: 30px;
     }
 }
+.cardLink {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}

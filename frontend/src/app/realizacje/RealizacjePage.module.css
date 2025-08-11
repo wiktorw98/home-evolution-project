@@ -5,6 +5,39 @@
     padding: 80px 0;
 }
 
+/* === NOWE STYLE DLA PASKU FILTRÓW === */
+.filterBar {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+.filterButton {
+    background-color: #ffffff;
+    color: #4a5568;
+    border: 1px solid #dee2e6;
+    padding: 0.6rem 1.2rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filterButton:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+.filterButton.activeFilter {
+    background-color: #00aaff;
+    color: #ffffff;
+    border-color: #00aaff;
+}
+
+/* === STYLE GALERII (BEZ ZMIAN) === */
 .galleryGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -18,7 +51,6 @@
     overflow: hidden;
     cursor: pointer;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    /* Nowoczesna optymalizacja animacji */
     will-change: transform;
 }
 
@@ -65,7 +97,6 @@
 }
 
 .categoryTag {
-    /* ZMIANA: Używamy naszego spójnego koloru marki */
     background-color: #00aaff;
     color: #fff;
     padding: 4px 10px;
@@ -73,7 +104,7 @@
     font-size: 0.8rem;
     font-weight: 600;
     text-transform: uppercase;
-    display: inline-block; /* Potrzebne dla poprawnego renderowania */
+    display: inline-block;
 }
 
 .cardContent h3 {
