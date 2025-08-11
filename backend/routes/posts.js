@@ -7,6 +7,7 @@ const upload = require('../middleware/upload');
 router.get('/', postController.getAllPosts);
 router.get('/:id', postController.getPostById);
 router.post('/', upload.array('images', 10), postController.createPost);
+router.put('/:id', upload.array('images', 10), postController.updatePost); // NOWA TRASA
 router.delete('/:id', postController.deletePost);
 
 module.exports = router;

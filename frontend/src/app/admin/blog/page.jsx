@@ -5,6 +5,57 @@ import { useRouter } from 'next/navigation';
 import api from '../../../utils/axiosConfig';
 import AdminLayout from '../AdminLayout';
 import styles from './AdminBlog.module.css';
+import Image from 'next/image';
+import { FiX } from 'react-icons/fi';
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+function PostEditor({ post, onClose, onUpdate }) {
+  const [title, setTitle] = useState(post.title);
+  const [content, setContent] = useState(post.content);
+  const [existingImages, setExistingImages] = useState(post.images || []);
+  const [newImages, setNewImages] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const handleImageDelete = (imageToDelete) => {
+    setExistingImages(existingImages.filter(img => img !== imageToDelete));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('content', content);
+    if (existingImages.length > 0) {
+      existingImages.forEach(img => formData.append('existingImages', img));
+    }
+    for (let i = 0; i < newImages.length; i++) {
+      formData.append('images', newImages[i]);
+    }
+    try {
+      const response = await api.put(`/api/posts/${post._id}`, formData);
+      onUpdate(response.data);
+      onClose();
+    } catch (err) { alert('Błąd podczas aktualizacji posta.'); } 
+    finally { setLoading(false); }
+  };
+
+  return (
+    <div className={styles.modalBackdrop} onClick={onClose}>
+      <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+        <form onSubmit={handleSubmit}>
+          <h2 className={styles.formHeader}>Edytuj Post</h2>
+          <div className={styles.formGroup}><label>Tytuł</label><input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required /></div>
+          <div className={styles.formGroup}><label>Treść</label><textarea value={content} onChange={(e) => setContent(e.target.value)} rows="10" required /></div>
+          <div className={styles.formGroup}><label>Istniejące zdjęcia</label><div className={styles.imagePreviewGrid}>{existingImages.map(img => (<div key={img} className={styles.imagePreviewWrapper}><Image src={`${BACKEND_URL}/${img}`} alt="Miniatura" width={80} height={80} className={styles.imagePreview} /><button type="button" onClick={() => handleImageDelete(img)} className={styles.deleteImageButton}><FiX /></button></div>))}</div></div>
+          <div className={styles.formGroup}><label>Dodaj nowe zdjęcia</label><input type="file" multiple onChange={(e) => setNewImages(e.target.files)} /></div>
+          <div className={styles.modalActions}><button type="button" onClick={onClose} className={styles.cancelButton}>Anuluj</button><button type="submit" disabled={loading} className={styles.submitButton}>{loading ? 'Zapisywanie...' : 'Zapisz zmiany'}</button></div>
+        </form>
+      </div>
+    </div>
+  );
+}
 
 export default function AdminBlogPage() {
   const [title, setTitle] = useState('');
@@ -14,6 +65,7 @@ export default function AdminBlogPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [editingPost, setEditingPost] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -24,7 +76,6 @@ export default function AdminBlogPage() {
   const fetchPosts = async () => {
     try {
       const response = await api.get('/api/posts');
-      // Zakładając, że paginacja zwraca obiekt { posts: [...] }
       setPosts(response.data.posts || []);
     } catch (err) { setError("Nie udało się załadować listy postów."); }
   };
@@ -34,25 +85,18 @@ export default function AdminBlogPage() {
   const handleCreate = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    setSuccess('');
-
+    setError(''); setSuccess('');
     const formData = new FormData();
     formData.append('title', title);
     formData.append('content', content);
     for (let i = 0; i < images.length; i++) {
       formData.append('images', images[i]);
     }
-
     try {
-      // ZMIANA: Usunięto ręczne ustawianie nagłówka
       const response = await api.post('/api/posts', formData);
       setPosts([response.data, ...posts]);
       setSuccess('Post został dodany pomyślnie!');
-      setTitle('');
-      setContent('');
-      setImages([]);
-      e.target.reset();
+      setTitle(''); setContent(''); setImages([]); e.target.reset();
     } catch (err) { setError('Wystąpił błąd podczas dodawania posta.'); } 
     finally { setLoading(false); }
   };
@@ -66,8 +110,14 @@ export default function AdminBlogPage() {
     } catch (err) { setError('Nie udało się usunąć posta.'); }
   };
 
+  const handleUpdate = (updatedPost) => {
+    setPosts(posts.map(p => p._id === updatedPost._id ? updatedPost : p));
+    setSuccess('Post zaktualizowany pomyślnie!');
+  };
+
   return (
     <AdminLayout>
+      {editingPost && <PostEditor post={editingPost} onClose={() => setEditingPost(null)} onUpdate={handleUpdate} />}
       <h1 className={styles.header}>Zarządzanie Blogiem</h1>
       <form onSubmit={handleCreate} className={styles.form}>
         <h2 className={styles.formHeader}>Dodaj nowy post</h2>
@@ -81,7 +131,7 @@ export default function AdminBlogPage() {
       <hr className={styles.separator} />
       <div className={styles.listContainer}>
         <h2 className={styles.listHeader}>Istniejące Posty</h2>
-        {posts.length > 0 ? (<ul className={styles.postList}>{posts.map(post => (<li key={post._id} className={styles.postItem}><span>{post.title}</span><button onClick={() => handleDelete(post._id)} className={styles.deleteButton}>Usuń</button></li>))}</ul>) : (<p>Brak postów.</p>)}
+        {posts.length > 0 ? (<ul className={styles.postList}>{posts.map(post => (<li key={post._id} className={styles.postItem}><span>{post.title}</span><div className={styles.actionButtons}><button onClick={() => setEditingPost(post)} className={styles.editButton}>Edytuj</button><button onClick={() => handleDelete(post._id)} className={styles.deleteButton}>Usuń</button></div></li>))}</ul>) : (<p>Brak postów.</p>)}
       </div>
     </AdminLayout>
   );
