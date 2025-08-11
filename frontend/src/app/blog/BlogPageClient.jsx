@@ -1,10 +1,10 @@
 // frontend/src/app/blog/BlogPageClient.jsx
 'use client';
-
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image'; // ZMIANA: Importujemy Image
 import pageStyles from '../Subpage.module.css'; 
 import blogStyles from './BlogPage.module.css'; 
 import SkeletonCard from '../../components/SkeletonCard';
@@ -43,10 +43,7 @@ export default function BlogPageClient() {
   return (
     <div>
       <header className={pageStyles.pageHeader}>
-        <div className={pageStyles.container}>
-          <h1>Blog i Aktualności</h1>
-          <p>Najnowsze informacje z branży i życia naszej firmy.</p>
-        </div>
+        <div className={pageStyles.container}><h1>Blog i Aktualności</h1><p>Najnowsze informacje z branży i życia naszej firmy.</p></div>
       </header>
       <main className={blogStyles.mainContent}>
         <div className={pageStyles.container}>
@@ -59,9 +56,23 @@ export default function BlogPageClient() {
                 ) : (
                   posts.length > 0 ? (
                     posts.map((post, index) => (
-                      <motion.article key={post._id} className={blogStyles.blogCard} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }} whileHover={{ y: -5, boxShadow: '0 15px 25px rgba(45, 55, 72, 0.1)' }}>
-                        <div className={blogStyles.cardContent}><div className={blogStyles.postMeta}>Opublikowano: {new Date(post.createdAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' })}</div><Link href={`/blog/${post._id}`}><h2 className={blogStyles.postTitle}>{post.title}</h2></Link><p className={blogStyles.postExcerpt}>{post.content.substring(0, 150)}...</p><Link href={`/blog/${post._id}`} className={blogStyles.readMoreLink}>Czytaj dalej <span className={blogStyles.arrow}>→</span></Link></div>
-                      </motion.article>
+                      // ZMIANA: Opakowujemy całą kartę w jeden link
+                      <Link key={post._id} href={`/blog/${post._id}`} className={blogStyles.cardLink}>
+                        <motion.article className={blogStyles.blogCard} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }} whileHover={{ y: -5, boxShadow: '0 15px 25px rgba(45, 55, 72, 0.1)' }}>
+                          {/* ZMIANA: Dodajemy kontener na obrazek */}
+                          {post.images && post.images.length > 0 && (
+                            <div className={blogStyles.imageContainer}>
+                              <Image src={`${BACKEND_URL}/${post.images[0]}`} alt={post.title} fill sizes="(max-width: 768px) 100vw, 33vw" className={blogStyles.image} />
+                            </div>
+                          )}
+                          <div className={blogStyles.cardContent}>
+                            <div className={blogStyles.postMeta}>Opublikowano: {new Date(post.createdAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+                            <h2 className={blogStyles.postTitle}>{post.title}</h2>
+                            <p className={blogStyles.postExcerpt}>{post.content.substring(0, 120)}...</p>
+                            <div className={blogStyles.readMoreLink}>Czytaj dalej <span className={blogStyles.arrow}>→</span></div>
+                          </div>
+                        </motion.article>
+                      </Link>
                     ))
                   ) : ( <p className={pageStyles.infoText}>Aktualnie brak wpisów na blogu.</p> )
                 )}
