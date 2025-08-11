@@ -1,4 +1,5 @@
 // frontend/src/app/realizacje/page.jsx
+import { Suspense } from 'react'; // ZMIANA: Importujemy Suspense
 import RealizacjePageClient from './RealizacjePageClient';
 
 export const metadata = {
@@ -7,5 +8,12 @@ export const metadata = {
 };
 
 export default function RealizacjePage() {
-  return <RealizacjePageClient />;
+  return (
+    // ZMIANA: Opakowujemy nasz komponent kliencki w <Suspense>
+    // fallback to prosty element, który wyświetli się na chwilę,
+    // zanim główny komponent będzie gotowy.
+    <Suspense fallback={<div>Ładowanie...</div>}>
+      <RealizacjePageClient />
+    </Suspense>
+  );
 }
