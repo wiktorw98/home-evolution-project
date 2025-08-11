@@ -1,7 +1,7 @@
 // frontend/src/app/realizacje/RealizacjePageClient.jsx
 'use client';
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation'; // ZMIANA: Importujemy hook
+import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -21,7 +21,7 @@ export default function RealizacjePageClient() {
   const [error, setError] = useState(null);
   const [activeFilter, setActiveFilter] = useState('Wszystkie');
   const [categories, setCategories] = useState(['Wszystkie']);
-  const searchParams = useSearchParams(); // ZMIANA: Inicjalizujemy hook
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const fetchRealizations = async () => {
@@ -34,7 +34,6 @@ export default function RealizacjePageClient() {
         const allCategories = ['Wszystkie', ...uniqueCategories];
         setCategories(allCategories);
 
-        // ZMIANA: Sprawdzamy, czy w URL jest parametr kategorii
         const categoryFromURL = searchParams.get('kategoria');
         if (categoryFromURL && allCategories.includes(categoryFromURL)) {
           setActiveFilter(categoryFromURL);
@@ -44,7 +43,7 @@ export default function RealizacjePageClient() {
       finally { setLoading(false); }
     };
     fetchRealizations();
-  }, [searchParams]); // ZMIANA: Uruchamiamy efekt, gdy zmienią się parametry URL
+  }, [searchParams]);
 
   const filteredRealizations = activeFilter === 'Wszystkie' ? realizations : realizations.filter(r => r.category === activeFilter);
 
@@ -67,7 +66,12 @@ export default function RealizacjePageClient() {
                     {filteredRealizations.map((realization) => (
                       <Link key={realization._id} href={`/realizacje/${realization._id}`} className={styles.cardLink}>
                         <motion.div layout className={styles.galleryCard} variants={cardVariants} initial="hidden" animate="visible" exit="exit" transition={{ duration: 0.3 }} whileHover="visible">
-                          <div className={styles.imageContainer}><Image src={`${BACKEND_URL}/${realization.imageUrl}`} alt={realization.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className={styles.image} /></div>
+                          {/* ZMIANA: Używamy pierwszego zdjęcia z tablicy 'images' */}
+                          <div className={styles.imageContainer}>
+                            {realization.images && realization.images.length > 0 && (
+                              <Image src={`${BACKEND_URL}/${realization.images[0]}`} alt={realization.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className={styles.image} />
+                            )}
+                          </div>
                           <motion.div className={styles.overlay} variants={overlayVariants}><div className={styles.cardContent}><span className={styles.categoryTag}>{realization.category}</span><h3>{realization.title}</h3></div><div className={styles.plusIconWrapper}><motion.div className={styles.plusIcon} whileHover={{ scale: 1.2, rotate: 90 }}><FiPlus size={28} /></motion.div></div></motion.div>
                         </motion.div>
                       </Link>

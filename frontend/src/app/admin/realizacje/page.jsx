@@ -5,16 +5,25 @@ import { useRouter } from 'next/navigation';
 import api from '../../../utils/axiosConfig';
 import AdminLayout from '../AdminLayout';
 import styles from './AdminRealizacje.module.css';
+import Image from 'next/image'; // ZMIANA: Importujemy Image
+import { FiX } from 'react-icons/fi'; // ZMIANA: Importujemy ikonę do usuwania
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 // ===================================================================
-// KOMPONENT 2: MODAL DO EDYCJI REALIZACJI
+// KOMPONENT 2: MODAL DO EDYCJI REALIZACJI (Wersja z galerią)
 // ===================================================================
 function RealizationEditor({ realization, onClose, onUpdate }) {
   const [title, setTitle] = useState(realization.title);
   const [description, setDescription] = useState(realization.description);
   const [category, setCategory] = useState(realization.category);
-  const [image, setImage] = useState(null);
+  const [existingImages, setExistingImages] = useState(realization.images);
+  const [newImages, setNewImages] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const handleImageDelete = (imageToDelete) => {
+    setExistingImages(existingImages.filter(img => img !== imageToDelete));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,7 +32,10 @@ function RealizationEditor({ realization, onClose, onUpdate }) {
     formData.append('title', title);
     formData.append('description', description);
     formData.append('category', category);
-    if (image) formData.append('image', image);
+    existingImages.forEach(img => formData.append('existingImages[]', img));
+    for (let i = 0; i < newImages.length; i++) {
+      formData.append('images', newImages[i]);
+    }
 
     try {
       const response = await api.put(`/api/realizations/${realization._id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
@@ -41,7 +53,20 @@ function RealizationEditor({ realization, onClose, onUpdate }) {
           <div className={styles.formGroup}><label>Tytuł</label><input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required /></div>
           <div className={styles.formGroup}><label>Opis</label><textarea value={description} onChange={(e) => setDescription(e.target.value)} required /></div>
           <div className={styles.formGroup}><label>Kategoria</label><select value={category} onChange={(e) => setCategory(e.target.value)}><option>Fotowoltaika</option><option>Termomodernizacja</option><option>Wymiana Źródła Ciepła</option><option>Inne</option></select></div>
-          <div className={styles.formGroup}><label>Zmień zdjęcie (opcjonalnie)</label><input type="file" onChange={(e) => setImage(e.target.files[0])} /></div>
+          
+          <div className={styles.formGroup}>
+            <label>Istniejące zdjęcia</label>
+            <div className={styles.imagePreviewGrid}>
+              {existingImages.map(img => (
+                <div key={img} className={styles.imagePreviewWrapper}>
+                  <Image src={`${BACKEND_URL}/${img}`} alt="Miniatura" width={80} height={80} className={styles.imagePreview} />
+                  <button type="button" onClick={() => handleImageDelete(img)} className={styles.deleteImageButton}><FiX /></button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className={styles.formGroup}><label>Dodaj nowe zdjęcia</label><input type="file" multiple onChange={(e) => setNewImages(e.target.files)} /></div>
           <div className={styles.modalActions}>
             <button type="button" onClick={onClose} className={styles.cancelButton}>Anuluj</button>
             <button type="submit" disabled={loading} className={styles.submitButton}>{loading ? 'Zapisywanie...' : 'Zapisz zmiany'}</button>
@@ -59,7 +84,7 @@ export default function AdminRealizacjePage() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('Fotowoltaika');
-  const [image, setImage] = useState(null);
+  const [images, setImages] = useState([]); // ZMIANA: Stan dla wielu obrazów
   const [realizations, setRealizations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -83,19 +108,21 @@ export default function AdminRealizacjePage() {
 
   const handleCreate = async (e) => {
     e.preventDefault();
-    if (!image) { setError("Zdjęcie jest wymagane!"); return; }
+    if (images.length === 0) { setError("Co najmniej jedno zdjęcie jest wymagane!"); return; }
     setLoading(true);
     setError(''); setSuccess('');
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
     formData.append('category', category);
-    formData.append('image', image);
+    for (let i = 0; i < images.length; i++) {
+      formData.append('images', images[i]);
+    }
     try {
       const response = await api.post('/api/realizations', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
       setRealizations([response.data, ...realizations]);
       setSuccess('Realizacja została dodana pomyślnie!');
-      setTitle(''); setDescription(''); setCategory('Fotowoltaika'); setImage(null); e.target.reset();
+      setTitle(''); setDescription(''); setCategory('Fotowoltaika'); setImages([]); e.target.reset();
     } catch (err) { setError('Wystąpił błąd podczas dodawania realizacji.'); } 
     finally { setLoading(false); }
   };
@@ -125,13 +152,20 @@ export default function AdminRealizacjePage() {
         <div className={styles.formGroup}><label htmlFor="title">Tytuł</label><input id="title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} required /></div>
         <div className={styles.formGroup}><label htmlFor="description">Opis</label><textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} required /></div>
         <div className={styles.formGroup}><label htmlFor="category">Kategoria</label><select id="category" value={category} onChange={(e) => setCategory(e.target.value)}><option>Fotowoltaika</option><option>Termomodernizacja</option><option>Wymiana Źródła Ciepła</option><option>Inne</option></select></div>
-        <div className={styles.formGroup}><label htmlFor="image">Zdjęcie</label><input id="image" type="file" onChange={(e) => setImage(e.target.files[0])} required /></div>
+        <div className={styles.formGroup}><label htmlFor="images">Zdjęcia (max 10)</label><input id="images" type="file" multiple onChange={(e) => setImages(e.target.files)} required /></div>
         <button type="submit" disabled={loading} className={styles.submitButton}>{loading ? 'Dodawanie...' : 'Dodaj realizację'}</button>
       </form>
       <hr className={styles.separator} />
       <div className={styles.listContainer}>
         <h2 className={styles.listHeader}>Istniejące Realizacje</h2>
-        {realizations.length > 0 ? (<ul className={styles.realizationList}>{realizations.map(realization => (<li key={realization._id} className={styles.realizationItem}><span>{realization.title}</span><div className={styles.actionButtons}><button onClick={() => setEditingRealization(realization)} className={styles.editButton}>Edytuj</button><button onClick={() => handleDelete(realization._id)} className={styles.deleteButton}>Usuń</button></div></li>))}</ul>) : (<p>Brak realizacji.</p>)}
+        {realizations.length > 0 ? (<ul className={styles.realizationList}>{realizations.map(realization => (<li key={realization._id} className={styles.realizationItem}>
+          <div className={styles.itemInfo}>
+            {realization.images && realization.images[0] && <Image src={`${BACKEND_URL}/${realization.images[0]}`} alt="Miniatura" width={40} height={40} className={styles.itemThumbnail} />}
+            <span>{realization.title}</span>
+            <span className={styles.imageCount}>({realization.images?.length || 0} zdjęć)</span>
+          </div>
+          <div className={styles.actionButtons}><button onClick={() => setEditingRealization(realization)} className={styles.editButton}>Edytuj</button><button onClick={() => handleDelete(realization._id)} className={styles.deleteButton}>Usuń</button></div>
+        </li>))}</ul>) : (<p>Brak realizacji.</p>)}
       </div>
     </AdminLayout>
   );

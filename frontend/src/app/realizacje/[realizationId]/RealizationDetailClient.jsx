@@ -18,6 +18,7 @@ export default function RealizationDetailClient() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isLightboxOpen, setLightboxOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const params = useParams();
   const { realizationId } = params;
 
@@ -27,18 +28,20 @@ export default function RealizationDetailClient() {
         try {
           const response = await axios.get(`${BACKEND_URL}/api/realizations/${realizationId}`);
           setRealization(response.data);
-        } catch (err) {
-          setError("Nie udało się załadować tej realizacji.");
-        } finally {
-          setLoading(false);
-        }
+        } catch (err) { setError("Nie udało się załadować tej realizacji."); } 
+        finally { setLoading(false); }
       };
       fetchRealization();
     }
   }, [realizationId]);
 
-  const openLightbox = () => setLightboxOpen(true);
-  const slides = realization ? [{ src: `${BACKEND_URL}/${realization.imageUrl}` }] : [];
+  const openLightbox = (index) => {
+    setCurrentImageIndex(index);
+    setLightboxOpen(true);
+  };
+
+  // ZMIANA: Przygotowujemy slajdy dla wszystkich obrazów z tablicy 'images'
+  const slides = realization?.images?.map(image => ({ src: `${BACKEND_URL}/${image}` })) || [];
 
   if (loading) return <div className={pageStyles.infoText}>Ładowanie...</div>;
   if (error) return <div className={`${pageStyles.infoText} ${pageStyles.errorText}`}>{error}</div>;
@@ -48,35 +51,33 @@ export default function RealizationDetailClient() {
     <div>
       <header className={pageStyles.pageHeader}>
         <div className={pageStyles.container}>
-          {/* ZMIANA: Zostaje tu tylko tytuł */}
           <h1>{realization.title}</h1>
+          <Link href={`/realizacje?kategoria=${encodeURIComponent(realization.category)}`} className={styles.headerCategoryLink}>{realization.category}</Link>
         </div>
       </header>
       <main className={styles.mainContent}>
         <div className={pageStyles.container}>
-          
-          {/* ZMIANA: Przenosimy kategorię tutaj, na początek głównej treści */}
           <div className={styles.categoryContainer}>
-            <Link href={`/realizacje?kategoria=${encodeURIComponent(realization.category)}`} className={styles.categoryLink}>
-              {realization.category}
-            </Link>
+            {/* Możemy tu coś dodać w przyszłości, na razie puste */}
           </div>
-
           <div className={styles.contentGrid}>
-            <div className={styles.imageColumn}>
-              <button className={styles.imageWrapper} onClick={openLightbox}><Image src={`${BACKEND_URL}/${realization.imageUrl}`} alt={realization.title} fill sizes="(max-width: 768px) 100vw, 50vw" className={styles.mainImage} /></button>
+            <div className={styles.galleryColumn}>
+              {/* ZMIANA: Mapujemy po tablicy 'images' */}
+              {realization.images && realization.images.map((image, index) => (
+                <button key={index} className={styles.imageWrapper} onClick={() => openLightbox(index)}>
+                  <Image src={`${BACKEND_URL}/${image}`} alt={`${realization.title} - zdjęcie ${index + 1}`} fill sizes="(max-width: 768px) 100vw, 50vw" className={styles.mainImage} />
+                </button>
+              ))}
             </div>
             <div className={styles.descriptionColumn}>
               <h2>Opis projektu</h2>
               <p>{realization.description}</p>
             </div>
           </div>
-          <div className={styles.backButtonContainer}>
-            <BackButton text="Wróć do wszystkich realizacji" />
-          </div>
+          <div className={styles.backButtonContainer}><BackButton text="Wróć do wszystkich realizacji" /></div>
         </div>
       </main>
-      <Lightbox open={isLightboxOpen} close={() => setLightboxOpen(false)} slides={slides} />
+      <Lightbox open={isLightboxOpen} close={() => setLightboxOpen(false)} slides={slides} index={currentImageIndex} />
     </div>
   );
 }

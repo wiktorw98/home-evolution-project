@@ -1,29 +1,17 @@
 // backend/models/Realization.js
-
 const mongoose = require('mongoose');
 
 const realizationSchema = new mongoose.Schema({
-  title: {
-    type: String,
+  title: { type: String, required: true, trim: true },
+  description: { type: String, required: true },
+  // ZMIANA: Zamiast jednego imageUrl, mamy tablicę 'images'
+  images: {
+    type: [String], // Tablica stringów (ścieżek do plików)
     required: true,
-    trim: true
+    validate: [val => val.length > 0, 'Należy wgrać co najmniej jedno zdjęcie.']
   },
-  description: {
-    type: String,
-    required: true
-  },
-  imageUrl: {
-    type: String, // Tutaj będziemy przechowywać ścieżkę do pliku na serwerze
-    required: true
-  },
-  category: {
-    type: String, // np. "Fotowoltaika", "Ocieplenia"
-    required: true
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
+  category: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('Realization', realizationSchema);
