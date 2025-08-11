@@ -40,12 +40,11 @@ exports.createRealization = async (req, res) => {
     res.status(201).json(savedRealization);
   } catch (err) {
     images.forEach(path => fs.unlink(path, e => { if (e) console.error(e); }));
-    console.error('Błąd walidacji przy tworzeniu realizacji:', err);
-    res.status(400).json({ message: `Błąd walidacji: ${err.message}` });
+    res.status(400).json({ message: 'Błąd walidacji.' });
   }
 };
 
-// === ZMIANA: Uzupełniamy brakującą logikę ===
+// Funkcja updateRealization jest już poprawna
 exports.updateRealization = async (req, res) => {
   try {
     const { title, description, category } = req.body;
@@ -71,12 +70,11 @@ exports.updateRealization = async (req, res) => {
     const updatedRealization = await realization.save();
     res.json(updatedRealization);
   } catch (err) {
-    console.error('Błąd przy aktualizacji realizacji:', err);
     res.status(400).json({ message: 'Błąd aktualizacji.' });
   }
 };
 
-// === ZMIANA: Uzupełniamy brakującą logikę ===
+// Funkcja deleteRealization jest już poprawna
 exports.deleteRealization = async (req, res) => {
   try {
     const realization = await Realization.findById(req.params.id);
@@ -94,7 +92,6 @@ exports.deleteRealization = async (req, res) => {
     await realization.deleteOne();
     res.json({ message: 'Realizacja została usunięta.' });
   } catch (err) {
-    console.error('Błąd przy usuwaniu realizacji:', err);
     res.status(500).json({ message: 'Błąd serwera.' });
   }
 };
