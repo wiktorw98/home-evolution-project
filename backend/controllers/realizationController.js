@@ -5,10 +5,25 @@ const fs = require('fs');
 // === ZMIANA: Uzupełniamy brakującą logikę ===
 exports.getAllRealizations = async (req, res) => {
   try {
-    const realizations = await Realization.find().sort({ createdAt: -1 });
-    res.json(realizations);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6; // 6 realizacji na stronę
+    const skip = (page - 1) * limit;
+
+    const totalRealizations = await Realization.countDocuments();
+    const totalPages = Math.ceil(totalRealizations / limit);
+
+    const realizations = await Realization.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+    
+    res.json({
+      realizations,
+      totalPages,
+      currentPage: page,
+    });
   } catch (err) {
-    console.error('Błąd przy pobieraniu wszystkich realizacji:', err);
+    console.error('Błąd przy pobieraniu realizacji z paginacją:', err);
     res.status(500).json({ message: 'Błąd serwera.' });
   }
 };
