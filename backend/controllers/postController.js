@@ -7,9 +7,11 @@ const fs = require('fs');
 // Funkcja pomocnicza do tworzenia czystej zajawki
 const createExcerpt = (htmlContent) => {
   if (!htmlContent) return '';
-  // Usuwa wszystkie tagi HTML i nadmiarowe białe znaki, a następnie skraca tekst
-  const text = htmlContent.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
-  return text.length > 150 ? text.substring(0, 150) + '...' : text;
+    const withSpaces = htmlContent.replace(/<\/h[1-6]>/g, ' ').replace(/<\/p>/g, ' ').replace(/<\/li>/g, ' ');
+  const plainText = withSpaces.replace(/<[^>]*>/g, '');
+    const normalizedText = plainText.replace(/\s+/g, ' ').trim();
+  
+  return normalizedText.length > 150 ? normalizedText.substring(0, 150) + '...' : normalizedText;
 };
 
 exports.getAllPosts = async (req, res) => {
@@ -23,9 +25,8 @@ exports.getAllPosts = async (req, res) => {
 
     const postsFromDb = await Post.find().sort({ createdAt: -1 }).skip(skip).limit(limit);
 
-    // ZMIANA: Dodajemy pole 'excerpt' do każdego posta przed wysłaniem
     const posts = postsFromDb.map(post => {
-      const postObject = post.toObject(); // Konwertujemy dokument Mongoose na zwykły obiekt
+      const postObject = post.toObject();
       return {
         ...postObject,
         excerpt: createExcerpt(postObject.content)
