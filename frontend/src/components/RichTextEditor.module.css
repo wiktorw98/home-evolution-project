@@ -1,0 +1,79 @@
+/* frontend/src/components/RichTextEditor.module.css */
+.editorWrapper {
+  border: 1px solid #cbd5e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.toolbar {
+  background-color: #f8f9fa;
+  padding: 0.5rem;
+  border-bottom: 1px solid #cbd5e0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.toolbar button {
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  height: 32px;
+}
+
+.toolbar button:hover {
+  background-color: #e9ecef;
+}
+
+.toolbar button.isActive {
+  background-color: #00aaff;
+  color: #fff;
+  border-color: #00aaff;
+}
+
+.toolbar button b { font-weight: 800; }
+.toolbar button i { font-style: italic; }
+.toolbar button u { text-decoration: underline; }
+.toolbar button s { text-decoration: line-through; }
+
+/* === KLUCZOWA ZMIANA: Style dla "konia trojańskiego" === */
+.colorButtonWrapper {
+  position: relative; /* Konieczne do pozycjonowania inputa wewnątrz */
+  width: 32px;
+  height: 32px;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.colorInput {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0; /* Czynimy input całkowicie niewidzialnym */
+  cursor: pointer;
+}
+
+.editorContent {
+  padding: 1rem;
+  min-height: 250px;
+}
+
+.editorContent h2 { font-size: 1.5em; margin: 1rem 0; }
+.editorContent h3 { font-size: 1.3em; margin: 1rem 0; }
+.editorContent p { margin: 0.5rem 0; }
+.editorContent ul, .editorContent ol { padding-left: 2rem; margin: 1rem 0; }
+.editorContent a { color: #00aaff; text-decoration: underline; }

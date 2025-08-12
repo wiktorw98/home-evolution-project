@@ -25,10 +25,9 @@ export default function AdminDashboard() {
         <h2>Witaj w panelu zarządzania!</h2>
         <p>Wybierz sekcję, którą chcesz edytować:</p>
         <div className={styles.navGrid}>
-          <Link href="/admin/oferta" className={styles.navCard}><h3>Zarządzaj Ofertą</h3><p>Edytuj opisy i korzyści usług.</p></Link>
+          {/* ZMIANA: Usunięto link do zarządzania ofertą */}
           <Link href="/admin/realizacje" className={styles.navCard}><h3>Zarządzaj Realizacjami</h3><p>Dodawaj i usuwaj zdjęcia z portfolio.</p></Link>
           <Link href="/admin/blog" className={styles.navCard}><h3>Zarządzaj Blogiem</h3><p>Twórz i usuwaj wpisy na blogu.</p></Link>
-          {/* NOWY LINK DO USTAWIEŃ */}
           <Link href="/admin/ustawienia" className={`${styles.navCard} ${styles.settingsCard}`}><h3>Ustawienia Konta</h3><p>Zmień swoje hasło i zarządzaj kontem.</p></Link>
         </div>
       </main>

@@ -2,10 +2,11 @@
 const Post = require('../models/Post');
 const fs = require('fs');
 
+// ZMIANA: Uzupełniamy brakującą logikę
 exports.getAllPosts = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 6;
+    const limit = parseInt(req.query.limit) || 10; // Zwiększamy limit dla panelu admina
     const skip = (page - 1) * limit;
     const totalPosts = await Post.countDocuments();
     const totalPages = Math.ceil(totalPosts / limit);
@@ -16,6 +17,7 @@ exports.getAllPosts = async (req, res) => {
   }
 };
 
+// ZMIANA: Uzupełniamy brakującą logikę
 exports.getPostById = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
@@ -24,6 +26,7 @@ exports.getPostById = async (req, res) => {
   } catch (err) { res.status(500).json({ message: 'Błąd serwera.' }); }
 };
 
+// Funkcja createPost jest już poprawna
 exports.createPost = async (req, res) => {
   const { title, content } = req.body;
   const images = req.files ? req.files.map(file => file.path.replace(/\\/g, '/')) : [];
@@ -37,7 +40,7 @@ exports.createPost = async (req, res) => {
   }
 };
 
-// NOWA FUNKCJA
+// Funkcja updatePost jest już poprawna
 exports.updatePost = async (req, res) => {
   try {
     const { title, content } = req.body;
@@ -64,6 +67,7 @@ exports.updatePost = async (req, res) => {
   }
 };
 
+// Funkcja deletePost jest już poprawna
 exports.deletePost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
