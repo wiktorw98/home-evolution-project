@@ -7,7 +7,7 @@ import AdminLayout from '../AdminLayout';
 import styles from './AdminBlog.module.css';
 import Image from 'next/image';
 import { FiX } from 'react-icons/fi';
-import RichTextEditor from '../../../components/RichTextEditor'; // Upewniamy się, że importujemy nasz nowy edytor
+import RichTextEditor from '../../../components/RichTextEditor';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -18,8 +18,29 @@ function PostEditor({ post, onClose, onUpdate }) {
   const [newImages, setNewImages] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const handleImageDelete = (imageToDelete) => { /* ... (logika bez zmian) ... */ };
-  const handleSubmit = async (e) => { /* ... (logika bez zmian) ... */ };
+  const handleImageDelete = (imageToDelete) => {
+    setExistingImages(existingImages.filter(img => img !== imageToDelete));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('content', content);
+    if (existingImages.length > 0) {
+      existingImages.forEach(img => formData.append('existingImages', img));
+    }
+    for (let i = 0; i < newImages.length; i++) {
+      formData.append('images', newImages[i]);
+    }
+    try {
+      const response = await api.put(`/api/posts/${post._id}`, formData);
+      onUpdate(response.data);
+      onClose();
+    } catch (err) { alert('Błąd podczas aktualizacji posta.'); } 
+    finally { setLoading(false); }
+  };
 
   return (
     <div className={styles.modalBackdrop} onClick={onClose}>
@@ -39,21 +60,35 @@ function PostEditor({ post, onClose, onUpdate }) {
 
 export default function AdminBlogPage() {
   const [title, setTitle] = useState('');
-  const [content, setContent] = useState('<p>Zacznij pisać swój artykuł tutaj...</p>'); // Stan teraz przechowuje HTML
+  const [content, setContent] = useState('<p>Zacznij pisać swój artykuł tutaj...</p>');
   const [images, setImages] = useState([]);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [editingPost, setEditingPost] = useState(null);
+  const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1 });
   const router = useRouter();
 
-  useEffect(() => { /* ... (logika tokenu bez zmian) ... */ }, [router]);
-  useEffect(() => { fetchPosts(); }, []);
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) router.push('/login');
+  }, [router]);
 
-  const fetchPosts = async () => { /* ... (logika bez zmian) ... */ };
-  const handleDelete = async (id) => { /* ... (logika bez zmian) ... */ };
-  const handleUpdate = (updatedPost) => { /* ... (logika bez zmian) ... */ };
+  const fetchPosts = async (page = 1) => {
+    try {
+      const response = await api.get(`/api/posts?page=${page}&limit=10`);
+      setPosts(response.data.posts || []);
+      setPagination({
+        currentPage: response.data.currentPage,
+        totalPages: response.data.totalPages,
+      });
+    } catch (err) { setError("Nie udało się załadować listy postów."); }
+  };
+
+  useEffect(() => {
+    fetchPosts(pagination.currentPage);
+  }, [pagination.currentPage]);
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -66,12 +101,27 @@ export default function AdminBlogPage() {
       formData.append('images', images[i]);
     }
     try {
-      const response = await api.post('/api/posts', formData);
-      fetchPosts();
+      await api.post('/api/posts', formData);
+      await fetchPosts(1); // Odśwież listę od pierwszej strony
       setSuccess('Post został dodany pomyślnie!');
       setTitle(''); setContent('<p></p>'); setImages([]); e.target.reset();
     } catch (err) { setError('Wystąpił błąd podczas dodawania posta.'); } 
     finally { setLoading(false); }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Czy na pewno chcesz usunąć ten post?')) return;
+    try {
+      await api.delete(`/api/posts/${id}`);
+      // Odświeżamy listę, aby uwzględnić potencjalną zmianę liczby stron
+      fetchPosts(pagination.currentPage);
+      setSuccess('Post został usunięty.');
+    } catch (err) { setError('Nie udało się usunąć posta.'); }
+  };
+
+  const handleUpdate = (updatedPost) => {
+    setPosts(posts.map(p => p._id === updatedPost._id ? updatedPost : p));
+    setSuccess('Post zaktualizowany pomyślnie!');
   };
 
   return (
@@ -90,7 +140,18 @@ export default function AdminBlogPage() {
       <hr className={styles.separator} />
       <div className={styles.listContainer}>
         <h2 className={styles.listHeader}>Istniejące Posty</h2>
-        {posts.length > 0 ? (<ul>{posts.map(post => (<li key={post._id} className={styles.postItem}><span>{post.title}</span><div className={styles.actionButtons}><button onClick={() => setEditingPost(post)} className={styles.editButton} disabled={loading}>Edytuj</button><button onClick={() => handleDelete(post._id)} className={styles.deleteButton} disabled={loading}>Usuń</button></div></li>))}</ul>) : (<p>Brak postów.</p>)}
+        {posts.length > 0 ? (
+          <>
+            <ul className={styles.postList}>{posts.map(post => (<li key={post._id} className={styles.postItem}><span>{post.title}</span><div className={styles.actionButtons}><button onClick={() => setEditingPost(post)} className={styles.editButton} disabled={loading}>Edytuj</button><button onClick={() => handleDelete(post._id)} className={styles.deleteButton} disabled={loading}>Usuń</button></div></li>))}</ul>
+            {pagination.totalPages > 1 && (
+              <div className={styles.pagination}>
+                <button onClick={() => fetchPosts(pagination.currentPage - 1)} disabled={pagination.currentPage === 1}>Poprzednia</button>
+                <span>Strona {pagination.currentPage} z {pagination.totalPages}</span>
+                <button onClick={() => fetchPosts(pagination.currentPage + 1)} disabled={pagination.currentPage === pagination.totalPages}>Następna</button>
+              </div>
+            )}
+          </>
+        ) : (<p>Brak postów.</p>)}
       </div>
     </AdminLayout>
   );

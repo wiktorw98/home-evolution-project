@@ -2,15 +2,36 @@
 const Post = require('../models/Post');
 const fs = require('fs');
 
-// ZMIANA: Uzupełniamy brakującą logikę
+
+
+// Funkcja pomocnicza do tworzenia czystej zajawki
+const createExcerpt = (htmlContent) => {
+  if (!htmlContent) return '';
+  // Usuwa wszystkie tagi HTML i nadmiarowe białe znaki, a następnie skraca tekst
+  const text = htmlContent.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+  return text.length > 150 ? text.substring(0, 150) + '...' : text;
+};
+
 exports.getAllPosts = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10; // Zwiększamy limit dla panelu admina
+    const limit = parseInt(req.query.limit) || 6;
     const skip = (page - 1) * limit;
+
     const totalPosts = await Post.countDocuments();
     const totalPages = Math.ceil(totalPosts / limit);
-    const posts = await Post.find().sort({ createdAt: -1 }).skip(skip).limit(limit);
+
+    const postsFromDb = await Post.find().sort({ createdAt: -1 }).skip(skip).limit(limit);
+
+    // ZMIANA: Dodajemy pole 'excerpt' do każdego posta przed wysłaniem
+    const posts = postsFromDb.map(post => {
+      const postObject = post.toObject(); // Konwertujemy dokument Mongoose na zwykły obiekt
+      return {
+        ...postObject,
+        excerpt: createExcerpt(postObject.content)
+      };
+    });
+    
     res.json({ posts, totalPages, currentPage: page });
   } catch (err) {
     res.status(500).json({ message: 'Błąd serwera przy pobieraniu postów.' });
