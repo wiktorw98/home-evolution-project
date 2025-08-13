@@ -1,13 +1,15 @@
+// frontend/src/app/layout.js
 import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
-import { Inter } from 'next/font/google'; // 1. Importujemy nową czcionkę Inter
+import FloatingCTA from '../components/FloatingCTA.jsx'; // ZMIANA: Importujemy nowy komponent
+import { Inter } from 'next/font/google';
+import { Toaster } from 'react-hot-toast';
 import './globals.css';
 
-// 2. Konfigurujemy czcionkę Inter
 const inter = Inter({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'], // '400' to normal, '700' to bold
-  display: 'swap', // Zapewnia, że tekst jest widoczny, zanim czcionka się załaduje
+  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
 });
 
 export const metadata = {
@@ -17,14 +19,16 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    // 3. Aplikujemy nową czcionkę do całej strony
     <html lang="pl" className={inter.className}>
       <body>
+        <Toaster position="top-center" reverseOrder={false} />
         <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
           <Navbar />
           <main style={{ flexGrow: 1 }}>{children}</main>
           <Footer />
         </div>
+        {/* ZMIANA: Dodajemy nasz pływający przycisk na końcu */}
+        <FloatingCTA />
       </body>
     </html>
   );
