@@ -93,7 +93,7 @@ export default function KontaktPageClient() {
         </div>
       </main>
       <section className={contactStyles.mapSection}>
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2583.101559319836!2d20.60880567705911!3d50.87718897167737!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f18!3m3!1m2!1s0x4718279935555555%3A0x4f2a63332601159e!2sHome%20Evolution!5e0!3m2!1spl!2spl!4v1723328491000!5m2!1spl!2spl" width="100%" height="450" className={contactStyles.mapFrame} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d773.3767876008677!2d20.614374624701227!3d50.88660580712952!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47182700118a4687%3A0xfa579dd01ae2790d!2sHome%20Evolution%20sp.%20z%20o.o.!5e1!3m2!1spl!2spl!4v1755084488727!5m2!1spl!2spl" width="100%" height="450" className={contactStyles.mapFrame} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
       </section>
     </div>
   );
