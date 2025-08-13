@@ -2,28 +2,29 @@
 const Realization = require('../models/Realization');
 const fs = require('fs');
 
-// === ZMIANA: Uzupełniamy brakującą logikę ===
 exports.getAllRealizations = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 6; // 6 realizacji na stronę
+    const limit = parseInt(req.query.limit) || 6;
+    const category = req.query.category;
     const skip = (page - 1) * limit;
 
-    const totalRealizations = await Realization.countDocuments();
+    // ZMIANA: Tworzymy obiekt z warunkami zapytania
+    const query = {};
+    if (category && category !== 'Wszystkie') {
+      query.category = category;
+    }
+
+    const totalRealizations = await Realization.countDocuments(query);
     const totalPages = Math.ceil(totalRealizations / limit);
 
-    const realizations = await Realization.find()
+    const realizations = await Realization.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
     
-    res.json({
-      realizations,
-      totalPages,
-      currentPage: page,
-    });
+    res.json({ realizations, totalPages, currentPage: page });
   } catch (err) {
-    console.error('Błąd przy pobieraniu realizacji z paginacją:', err);
     res.status(500).json({ message: 'Błąd serwera.' });
   }
 };

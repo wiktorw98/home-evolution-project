@@ -17,43 +17,70 @@ const cardVariants = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 
 const overlayVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.4, ease: 'easeOut' } } };
 
 export default function RealizacjePageClient() {
-  const [allRealizations, setAllRealizations] = useState([]);
+  const [realizations, setRealizations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeFilter, setActiveFilter] = useState('Wszystkie');
   const [categories, setCategories] = useState(['Wszystkie']);
+  const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1 });
   const searchParams = useSearchParams();
 
-  // ZMIANA: Logika paginacji (na razie nieużywana, ale gotowa na przyszłość)
-  // const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1 });
-
-  const fetchAndSetData = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`${BACKEND_URL}/api/realizations`);
-      const fetchedRealizations = response.data; // Zakładamy, że na razie pobieramy wszystkie
-      setAllRealizations(fetchedRealizations);
-      
-      const uniqueCategories = [...new Set(fetchedRealizations.map(item => item.category))];
-      const allCategories = ['Wszystkie', ...uniqueCategories];
-      setCategories(allCategories);
-
-      const categoryFromURL = searchParams.get('kategoria');
-      if (categoryFromURL && allCategories.includes(categoryFromURL)) {
-        setActiveFilter(categoryFromURL);
-      }
-    } catch (err) { 
-      setError("Nie udało się załadować realizacji."); 
-    } finally { 
-      setLoading(false); 
-    }
-  }, [searchParams]);
-
+  // Efekt do pobrania tylko listy kategorii (uruchamia się raz)
   useEffect(() => {
-    fetchAndSetData();
-  }, [fetchAndSetData]);
+    const fetchCategories = async () => {
+      try {
+        // To zapytanie można w przyszłości zoptymalizować do osobnego, lżejszego endpointu API
+        const response = await axios.get(`${BACKEND_URL}/api/realizations`);
+        const uniqueCategories = [...new Set(response.data.realizations.map(item => item.category))];
+        setCategories(['Wszystkie', ...uniqueCategories]);
+      } catch (err) { 
+        console.error("Błąd pobierania kategorii.", err);
+      }
+    };
+    fetchCategories();
+  }, []);
 
-  const filteredRealizations = activeFilter === 'Wszystkie' ? allRealizations : allRealizations.filter(r => r.category === activeFilter);
+  // Efekt do pobierania realizacji (reaguje na zmianę filtra i strony)
+  useEffect(() => {
+    const fetchRealizations = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(`${BACKEND_URL}/api/realizations`, {
+          params: {
+            page: pagination.currentPage,
+            limit: REALIZATIONS_PER_PAGE,
+            category: activeFilter === 'Wszystkie' ? undefined : activeFilter,
+          }
+        });
+        setRealizations(response.data.realizations);
+        setPagination(prev => ({ ...prev, totalPages: response.data.totalPages }));
+      } catch (err) { 
+        setError("Nie udało się załadować realizacji."); 
+      } finally { 
+        setLoading(false); 
+      }
+    };
+    fetchRealizations();
+  }, [activeFilter, pagination.currentPage]);
+
+  // Efekt do ustawiania filtra z URL
+  useEffect(() => {
+    const categoryFromURL = searchParams.get('kategoria');
+    if (categoryFromURL && categories.includes(categoryFromURL)) {
+      setActiveFilter(categoryFromURL);
+    }
+  }, [searchParams, categories]);
+
+  const handleFilterChange = (category) => {
+    setActiveFilter(category);
+    setPagination(prev => ({ ...prev, currentPage: 1 })); // Resetuj do pierwszej strony po zmianie filtra
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage < 1 || newPage > pagination.totalPages) return;
+    setPagination(prev => ({ ...prev, currentPage: newPage }));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <div>
@@ -65,13 +92,13 @@ export default function RealizacjePageClient() {
           {error && <p className={`${pageStyles.infoText} ${pageStyles.errorText}`}>{error}</p>}
           {!error && (
             <>
-              <div className={styles.filterBar}>{categories.map(category => (<button key={category} className={`${styles.filterButton} ${activeFilter === category ? styles.activeFilter : ''}`} onClick={() => setActiveFilter(category)}>{category}</button>))}</div>
+              <div className={styles.filterBar}>{categories.map(category => (<button key={category} className={`${styles.filterButton} ${activeFilter === category ? styles.activeFilter : ''}`} onClick={() => handleFilterChange(category)}>{category}</button>))}</div>
               <motion.div layout className={styles.galleryGrid}>
                 {loading ? (
                   Array.from({ length: REALIZATIONS_PER_PAGE }).map((_, index) => <SkeletonCard key={index} type="realization" />)
                 ) : (
                   <AnimatePresence>
-                    {filteredRealizations.map((realization) => (
+                    {realizations.map((realization) => (
                       <Link key={realization._id} href={`/realizacje/${realization._id}`} className={styles.cardLink}>
                         <motion.div layout className={styles.galleryCard} variants={cardVariants} initial="hidden" animate="visible" exit="exit" transition={{ duration: 0.3 }} whileHover="visible">
                           <div className={styles.imageContainer}>
@@ -86,7 +113,9 @@ export default function RealizacjePageClient() {
                   </AnimatePresence>
                 )}
               </motion.div>
-              {/* Paginacja zostanie dodana w kolejnym kroku, gdy filtrowanie będzie działać z paginacją */}
+              {!loading && pagination.totalPages > 1 && (
+                <div className={styles.pagination}><button onClick={() => handlePageChange(pagination.currentPage - 1)} disabled={pagination.currentPage === 1}>Poprzednia</button><span>Strona {pagination.currentPage} z {pagination.totalPages}</span><button onClick={() => handlePageChange(pagination.currentPage + 1)} disabled={pagination.currentPage === pagination.totalPages}>Następna</button></div>
+              )}
             </>
           )}
         </div>

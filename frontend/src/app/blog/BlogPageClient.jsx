@@ -17,12 +17,19 @@ export default function BlogPageClient() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1 });
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${BACKEND_URL}/api/posts`, { params: { page: pagination.currentPage, limit: POSTS_PER_PAGE } });
+        const response = await axios.get(`${BACKEND_URL}/api/posts`, {
+          params: {
+            page: pagination.currentPage,
+            limit: POSTS_PER_PAGE,
+            search: searchQuery || undefined, // Wyślij parametr 'search' tylko jeśli nie jest pusty
+          }
+        });
         setPosts(response.data.posts);
         setPagination(prev => ({ ...prev, totalPages: response.data.totalPages }));
       } catch (err) {
@@ -31,13 +38,24 @@ export default function BlogPageClient() {
         setLoading(false);
       }
     };
-    fetchPosts();
-  }, [pagination.currentPage]);
+    
+    // Debounce: Czekaj 300ms po ostatnim wciśnięciu klawisza, zanim wykonasz zapytanie
+    const debounceFetch = setTimeout(() => {
+      fetchPosts();
+    }, 300);
+
+    return () => clearTimeout(debounceFetch);
+  }, [pagination.currentPage, searchQuery]);
 
   const handlePageChange = (newPage) => {
     if (newPage < 1 || newPage > pagination.totalPages) return;
     setPagination(prev => ({ ...prev, currentPage: newPage }));
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setPagination(prev => ({ ...prev, currentPage: 1 })); // Resetuj do pierwszej strony przy wyszukiwaniu
   };
 
   return (
@@ -47,35 +65,40 @@ export default function BlogPageClient() {
       </header>
       <main className={blogStyles.mainContent}>
         <div className={pageStyles.container}>
+          {/* Dodajemy pasek wyszukiwania */}
+          <div className={blogStyles.searchBarContainer}>
+            <input 
+              type="text" 
+              placeholder="Szukaj artykułów po tytule..." 
+              value={searchQuery} 
+              onChange={handleSearchChange}
+              className={blogStyles.searchInput}
+            />
+          </div>
+
           {error && <p className={`${pageStyles.infoText} ${pageStyles.errorText}`}>{error}</p>}
           {!error && (
             <>
-              <div className={blogStyles.blogGrid}>
+              <motion.div layout className={blogStyles.blogGrid}>
                 {loading ? (
                   Array.from({ length: POSTS_PER_PAGE }).map((_, index) => <SkeletonCard key={index} type="blog" />)
                 ) : (
                   posts.length > 0 ? (
-                    posts.map((post) => (
-                      // ZMIANA: Upraszczamy strukturę i dodajemy tag <a>
-                      <motion.article key={post._id} className={blogStyles.blogCard} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} whileHover={{ y: -5, boxShadow: '0 15px 25px rgba(45, 55, 72, 0.1)' }}>
-                        <Link href={`/blog/${post._id}`} className={blogStyles.cardLink}>
-                          {post.images && post.images.length > 0 && (
-                            <div className={blogStyles.imageContainer}>
-                              <Image src={`${BACKEND_URL}/${post.images[0]}`} alt={post.title} fill sizes="(max-width: 768px) 100vw, 33vw" className={blogStyles.image} />
-                            </div>
-                          )}
-                          <div className={blogStyles.cardContent}>
-                            <div className={blogStyles.postMeta}>Opublikowano: {new Date(post.createdAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
-                            <h2 className={blogStyles.postTitle}>{post.title}</h2>
-                            <p className={blogStyles.postExcerpt}>{post.excerpt}</p>
-                            <div className={blogStyles.readMoreLink}>Czytaj dalej <span className={blogStyles.arrow}>→</span></div>
-                          </div>
+                    <AnimatePresence>
+                      {posts.map((post) => (
+                        <Link key={post._id} href={`/blog/${post._id}`} className={blogStyles.cardLink}>
+                          <motion.article layout="position" className={blogStyles.blogCard} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} whileHover={{ y: -5, boxShadow: '0 15px 25px rgba(45, 55, 72, 0.1)' }}>
+                            {post.images && post.images.length > 0 && (
+                              <div className={blogStyles.imageContainer}><Image src={`${BACKEND_URL}/${post.images[0]}`} alt={post.title} fill sizes="(max-width: 768px) 100vw, 33vw" className={blogStyles.image} /></div>
+                            )}
+                            <div className={blogStyles.cardContent}><div className={blogStyles.postMeta}>Opublikowano: {new Date(post.createdAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' })}</div><h2 className={blogStyles.postTitle}>{post.title}</h2><p className={blogStyles.postExcerpt}>{post.excerpt}</p><div className={blogStyles.readMoreLink}>Czytaj dalej <span className={blogStyles.arrow}>→</span></div></div>
+                          </motion.article>
                         </Link>
-                      </motion.article>
-                    ))
-                  ) : ( <p className={pageStyles.infoText}>Aktualnie brak wpisów na blogu.</p> )
+                      ))}
+                    </AnimatePresence>
+                  ) : ( <p className={pageStyles.infoText}>Brak postów pasujących do Twoich kryteriów.</p> )
                 )}
-              </div>
+              </motion.div>
               {!loading && pagination.totalPages > 1 && (
                 <div className={blogStyles.pagination}><button onClick={() => handlePageChange(pagination.currentPage - 1)} disabled={pagination.currentPage === 1}>Poprzednia</button><span>Strona {pagination.currentPage} z {pagination.totalPages}</span><button onClick={() => handlePageChange(pagination.currentPage + 1)} disabled={pagination.currentPage === pagination.totalPages}>Następna</button></div>
               )}

@@ -18,24 +18,24 @@ exports.getAllPosts = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 6;
+    const searchQuery = req.query.search;
     const skip = (page - 1) * limit;
 
-    const totalPosts = await Post.countDocuments();
+    // ZMIANA: Tworzymy obiekt z warunkami zapytania
+    const query = {};
+    if (searchQuery) {
+      query.title = { $regex: searchQuery, $options: 'i' }; // Wyszukiwanie bez względu na wielkość liter
+    }
+
+    const totalPosts = await Post.countDocuments(query);
     const totalPages = Math.ceil(totalPosts / limit);
 
-    const postsFromDb = await Post.find().sort({ createdAt: -1 }).skip(skip).limit(limit);
-
-    const posts = postsFromDb.map(post => {
-      const postObject = post.toObject();
-      return {
-        ...postObject,
-        excerpt: createExcerpt(postObject.content)
-      };
-    });
+    const postsFromDb = await Post.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit);
+    const posts = postsFromDb.map(post => ({ ...post.toObject(), excerpt: createExcerpt(post.content) }));
     
     res.json({ posts, totalPages, currentPage: page });
   } catch (err) {
-    res.status(500).json({ message: 'Błąd serwera przy pobieraniu postów.' });
+    res.status(500).json({ message: 'Błąd serwera.' });
   }
 };
 
