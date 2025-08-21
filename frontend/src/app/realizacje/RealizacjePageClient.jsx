@@ -24,13 +24,35 @@ export default function RealizacjePageClient() {
   const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1 });
   const searchParams = useSearchParams();
 
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return '';
+    if (imagePath.startsWith('http')) {
+        return imagePath;
+    }
+    return `${BACKEND_URL}/${imagePath}`;
+  };
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${BACKEND_URL}/api/realizations`);
-        const uniqueCategories = [...new Set(response.data.realizations.map(item => item.category))];
+        const response = await axios.get(`${BACKEND_URL}/api/realizations?limit=1000`);
+        
+        const allCategories = response.data.realizations.flatMap(item => {
+          if (Array.isArray(item.category)) {
+            return item.category;
+          }
+          if (typeof item.category === 'string') {
+            return [item.category];
+          }
+          return [];
+        });
+        
+        const uniqueCategories = [...new Set(allCategories)];
+        
         setCategories(['Wszystkie', ...uniqueCategories]);
-      } catch (err) { console.error("Błąd pobierania kategorii.", err); }
+      } catch (err) { 
+        console.error("Błąd pobierania kategorii.", err);
+      }
     };
     fetchCategories();
   }, []);
@@ -48,8 +70,11 @@ export default function RealizacjePageClient() {
         });
         setRealizations(response.data.realizations);
         setPagination(prev => ({ ...prev, totalPages: response.data.totalPages }));
-      } catch (err) { setError("Nie udało się załadować realizacji."); } 
-      finally { setLoading(false); }
+      } catch (err) { 
+        setError("Nie udało się załadować realizacji."); 
+      } finally { 
+        setLoading(false); 
+      }
     };
     fetchRealizations();
   }, [activeFilter, pagination.currentPage]);
@@ -71,15 +96,6 @@ export default function RealizacjePageClient() {
     setPagination(prev => ({ ...prev, currentPage: newPage }));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-  
-  // KLUCZOWA POPRAWKA: Ta sama inteligentna funkcja co na stronie bloga
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return '/placeholder.jpg';
-    if (imagePath.startsWith('http')) {
-      return imagePath;
-    }
-    return `${BACKEND_URL}/${imagePath}`;
-  };
 
   return (
     <div>
@@ -91,7 +107,17 @@ export default function RealizacjePageClient() {
           {error && <p className={`${pageStyles.infoText} ${pageStyles.errorText}`}>{error}</p>}
           {!error && (
             <>
-              <div className={styles.filterBar}>{categories.map(category => (<button key={category} className={`${styles.filterButton} ${activeFilter === category ? styles.activeFilter : ''}`} onClick={() => handleFilterChange(category)}>{category}</button>))}</div>
+              <div className={styles.filterBar}>
+                {categories.map(category => (
+                  <button 
+                    key={category} 
+                    className={`${styles.filterButton} ${activeFilter === category ? styles.activeFilter : ''}`} 
+                    onClick={() => handleFilterChange(category)}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
               <motion.div layout className={styles.galleryGrid}>
                 {loading ? (
                   Array.from({ length: REALIZATIONS_PER_PAGE }).map((_, index) => <SkeletonCard key={index} type="realization" />)
@@ -102,11 +128,18 @@ export default function RealizacjePageClient() {
                         <motion.div layout className={styles.galleryCard} variants={cardVariants} initial="hidden" animate="visible" exit="exit" transition={{ duration: 0.3 }} whileHover="visible">
                           <div className={styles.imageContainer}>
                             {realization.images && realization.images.length > 0 && (
-                              // KLUCZOWA POPRAWKA: Używamy nowej funkcji
                               <Image src={getImageUrl(realization.images[0])} alt={realization.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className={styles.image} />
                             )}
                           </div>
-                          <motion.div className={styles.overlay} variants={overlayVariants}><div className={styles.cardContent}><span className={styles.categoryTag}>{realization.category}</span><h3>{realization.title}</h3></div><div className={styles.plusIconWrapper}><motion.div className={styles.plusIcon} whileHover={{ scale: 1.2, rotate: 90 }}><FiPlus size={28} /></motion.div></div></motion.div>
+                          <motion.div className={styles.overlay} variants={overlayVariants}>
+                            <div className={styles.cardContent}>
+                              <span className={styles.categoryTag}>{Array.isArray(realization.category) ? realization.category[0] : realization.category}</span>
+                              <h3>{realization.title}</h3>
+                            </div>
+                            <div className={styles.plusIconWrapper}>
+                              <motion.div className={styles.plusIcon} whileHover={{ scale: 1.2, rotate: 90 }}><FiPlus size={28} /></motion.div>
+                            </div>
+                          </motion.div>
                         </motion.div>
                       </Link>
                     ))}
@@ -114,7 +147,11 @@ export default function RealizacjePageClient() {
                 )}
               </motion.div>
               {!loading && pagination.totalPages > 1 && (
-                <div className={styles.pagination}><button onClick={() => handlePageChange(pagination.currentPage - 1)} disabled={pagination.currentPage === 1}>Poprzednia</button><span>Strona {pagination.currentPage} z {pagination.totalPages}</span><button onClick={() => handlePageChange(pagination.currentPage + 1)} disabled={pagination.currentPage === pagination.totalPages}>Następna</button></div>
+                <div className={styles.pagination}>
+                  <button onClick={() => handlePageChange(pagination.currentPage - 1)} disabled={pagination.currentPage === 1}>Poprzednia</button>
+                  <span>Strona {pagination.currentPage} z {pagination.totalPages}</span>
+                  <button onClick={() => handlePageChange(pagination.currentPage + 1)} disabled={pagination.currentPage === pagination.totalPages}>Następna</button>
+                </div>
               )}
             </>
           )}
