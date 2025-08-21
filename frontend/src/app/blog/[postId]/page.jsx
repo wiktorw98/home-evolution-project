@@ -1,15 +1,11 @@
-// frontend/src/app/blog/[postId]/page.jsx
 'use client';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-
-// ZMIANA: Importujemy komponent Lightbox i jego style
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
-
 import pageStyles from '../../Subpage.module.css';
 import postStyles from './PostPage.module.css';
 
@@ -21,7 +17,6 @@ export default function PostPage({ params }) {
   const [error, setError] = useState(null);
   const { postId } = params;
 
-  // ZMIANA: Dodajemy stan do zarządzania galerią
   const [isLightboxOpen, setLightboxOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -40,16 +35,26 @@ export default function PostPage({ params }) {
       fetchPost();
     }
   }, [postId]);
+  
+  // KLUCZOWA POPRAWKA: Inteligentna funkcja do tworzenia adresu URL obrazka
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return '/placeholder.jpg'; // Zabezpieczenie na wypadek braku ścieżki
+    // Jeśli ścieżka to już pełny URL (z Cloudinary), zwróć ją bez zmian.
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    // W przeciwnym razie (dla starych obrazków), doklej adres backendu.
+    return `${BACKEND_URL}/${imagePath}`;
+  };
 
-  // Funkcja otwierająca galerię na klikniętym zdjęciu
   const openLightbox = (index) => {
     setCurrentImageIndex(index);
     setLightboxOpen(true);
   };
 
-  // Przygotowujemy slajdy dla galerii
+  // KLUCZOWA POPRAWKA: Używamy nowej funkcji do tworzenia linków dla galerii
   const slides = post?.images?.map(image => ({
-    src: `${BACKEND_URL}/${image}`
+    src: getImageUrl(image)
   })) || [];
 
   return (
@@ -78,14 +83,14 @@ export default function PostPage({ params }) {
               {post.images && post.images.length > 0 && (
                 <div className={postStyles.gallery}>
                   {post.images.map((image, index) => (
-                    // ZMIANA: Każde zdjęcie jest teraz przyciskiem otwierającym galerię
                     <button 
                       key={index} 
                       className={postStyles.galleryImageWrapper}
                       onClick={() => openLightbox(index)}
                     >
                       <Image 
-                        src={`${BACKEND_URL}/${image}`} 
+                        // KLUCZOWA POPRAWKA: Używamy nowej funkcji również tutaj
+                        src={getImageUrl(image)} 
                         alt={`Zdjęcie ${index + 1} do posta ${post.title}`}
                         fill
                         sizes="(max-width: 768px) 100vw, 800px"
@@ -103,7 +108,6 @@ export default function PostPage({ params }) {
         </div>
       </main>
 
-      {/* ZMIANA: Dodajemy komponent Lightbox, który jest widoczny tylko gdy isLightboxOpen=true */}
       <Lightbox
         open={isLightboxOpen}
         close={() => setLightboxOpen(false)}
