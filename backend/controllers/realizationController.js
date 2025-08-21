@@ -1,15 +1,19 @@
-// backend/controllers/realizationController.js
 const Realization = require('../models/Realization');
 const fs = require('fs');
 
 exports.getAllRealizations = async (req, res) => {
   try {
+    // OPTYMALIZACJA: Specjalna, lekka odpowiedź dla mapy strony
+    if (req.query.forSitemap) {
+      const realizations = await Realization.find({}).select('_id updatedAt');
+      return res.json(realizations);
+    }
+
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 6;
     const category = req.query.category;
     const skip = (page - 1) * limit;
 
-    // ZMIANA: Tworzymy obiekt z warunkami zapytania
     const query = {};
     if (category && category !== 'Wszystkie') {
       query.category = category;
@@ -29,7 +33,6 @@ exports.getAllRealizations = async (req, res) => {
   }
 };
 
-// === ZMIANA: Uzupełniamy brakującą logikę ===
 exports.getRealizationById = async (req, res) => {
   try {
     const realization = await Realization.findById(req.params.id);
@@ -43,7 +46,6 @@ exports.getRealizationById = async (req, res) => {
   }
 };
 
-// Funkcja createRealization jest już poprawna
 exports.createRealization = async (req, res) => {
   const { title, description, category } = req.body;
   if (!req.files || req.files.length === 0) {
@@ -60,7 +62,6 @@ exports.createRealization = async (req, res) => {
   }
 };
 
-// Funkcja updateRealization jest już poprawna
 exports.updateRealization = async (req, res) => {
   try {
     const { title, description, category } = req.body;
@@ -90,7 +91,6 @@ exports.updateRealization = async (req, res) => {
   }
 };
 
-// Funkcja deleteRealization jest już poprawna
 exports.deleteRealization = async (req, res) => {
   try {
     const realization = await Realization.findById(req.params.id);
