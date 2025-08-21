@@ -1,6 +1,5 @@
-// frontend/src/app/realizacje/RealizacjePageClient.jsx
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import Image from 'next/image';
@@ -25,22 +24,17 @@ export default function RealizacjePageClient() {
   const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1 });
   const searchParams = useSearchParams();
 
-  // Efekt do pobrania tylko listy kategorii (uruchamia się raz)
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        // To zapytanie można w przyszłości zoptymalizować do osobnego, lżejszego endpointu API
         const response = await axios.get(`${BACKEND_URL}/api/realizations`);
         const uniqueCategories = [...new Set(response.data.realizations.map(item => item.category))];
         setCategories(['Wszystkie', ...uniqueCategories]);
-      } catch (err) { 
-        console.error("Błąd pobierania kategorii.", err);
-      }
+      } catch (err) { console.error("Błąd pobierania kategorii.", err); }
     };
     fetchCategories();
   }, []);
 
-  // Efekt do pobierania realizacji (reaguje na zmianę filtra i strony)
   useEffect(() => {
     const fetchRealizations = async () => {
       setLoading(true);
@@ -54,16 +48,12 @@ export default function RealizacjePageClient() {
         });
         setRealizations(response.data.realizations);
         setPagination(prev => ({ ...prev, totalPages: response.data.totalPages }));
-      } catch (err) { 
-        setError("Nie udało się załadować realizacji."); 
-      } finally { 
-        setLoading(false); 
-      }
+      } catch (err) { setError("Nie udało się załadować realizacji."); } 
+      finally { setLoading(false); }
     };
     fetchRealizations();
   }, [activeFilter, pagination.currentPage]);
 
-  // Efekt do ustawiania filtra z URL
   useEffect(() => {
     const categoryFromURL = searchParams.get('kategoria');
     if (categoryFromURL && categories.includes(categoryFromURL)) {
@@ -73,13 +63,22 @@ export default function RealizacjePageClient() {
 
   const handleFilterChange = (category) => {
     setActiveFilter(category);
-    setPagination(prev => ({ ...prev, currentPage: 1 })); // Resetuj do pierwszej strony po zmianie filtra
+    setPagination(prev => ({ ...prev, currentPage: 1 }));
   };
 
   const handlePageChange = (newPage) => {
     if (newPage < 1 || newPage > pagination.totalPages) return;
     setPagination(prev => ({ ...prev, currentPage: newPage }));
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  
+  // KLUCZOWA POPRAWKA: Ta sama inteligentna funkcja co na stronie bloga
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return '/placeholder.jpg';
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    return `${BACKEND_URL}/${imagePath}`;
   };
 
   return (
@@ -103,7 +102,8 @@ export default function RealizacjePageClient() {
                         <motion.div layout className={styles.galleryCard} variants={cardVariants} initial="hidden" animate="visible" exit="exit" transition={{ duration: 0.3 }} whileHover="visible">
                           <div className={styles.imageContainer}>
                             {realization.images && realization.images.length > 0 && (
-                              <Image src={`${BACKEND_URL}/${realization.images[0]}`} alt={realization.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className={styles.image} />
+                              // KLUCZOWA POPRAWKA: Używamy nowej funkcji
+                              <Image src={getImageUrl(realization.images[0])} alt={realization.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className={styles.image} />
                             )}
                           </div>
                           <motion.div className={styles.overlay} variants={overlayVariants}><div className={styles.cardContent}><span className={styles.categoryTag}>{realization.category}</span><h3>{realization.title}</h3></div><div className={styles.plusIconWrapper}><motion.div className={styles.plusIcon} whileHover={{ scale: 1.2, rotate: 90 }}><FiPlus size={28} /></motion.div></div></motion.div>

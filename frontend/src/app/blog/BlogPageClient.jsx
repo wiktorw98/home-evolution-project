@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-// POPRAWKA: Dodajemy 'AnimatePresence' do importu z framer-motion
 import { motion, AnimatePresence } from 'framer-motion'; 
 import Link from 'next/link';
 import Image from 'next/image';
@@ -12,37 +11,21 @@ import SkeletonCard from '../../components/SkeletonCard';
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 const POSTS_PER_PAGE = 6;
 
-// OPTYMALIZACJA: Tworzymy dedykowany hook do debouncingu wartości
-// Dzięki temu główna logika komponentu staje się znacznie czystsza
 function useDebounce(value, delay) {
   const [debouncedValue, setDebouncedValue] = useState(value);
-
   useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    // Czyścimy timeout przy każdej zmianie wartości lub odmontowaniu komponentu
-    return () => {
-      clearTimeout(handler);
-    };
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(handler);
   }, [value, delay]);
-
   return debouncedValue;
 }
-
 
 export default function BlogPageClient() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1 });
-  
-  // Stan dla wartości wpisywanej przez użytkownika w czasie rzeczywistym
   const [searchQuery, setSearchQuery] = useState('');
-  
-  // OPTYMALIZACJA: Używamy hooka do stworzenia opóźnionej wersji zapytania
-  // Zapytanie do API będzie wysyłane dopiero 500ms po tym, jak użytkownik przestanie pisać
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   useEffect(() => {
@@ -53,7 +36,6 @@ export default function BlogPageClient() {
           params: {
             page: pagination.currentPage,
             limit: POSTS_PER_PAGE,
-            // Szukamy po opóźnionej wartości, a nie tej wpisywanej w czasie rzeczywistym
             search: debouncedSearchQuery || undefined,
           }
         });
@@ -65,9 +47,7 @@ export default function BlogPageClient() {
         setLoading(false);
       }
     };
-    
     fetchPosts();
-    // Ten efekt reaguje teraz tylko na zmianę strony lub na OSTATECZNĄ (opóźnioną) frazę wyszukiwania
   }, [pagination.currentPage, debouncedSearchQuery]);
 
   const handlePageChange = (newPage) => {
@@ -78,10 +58,20 @@ export default function BlogPageClient() {
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
-    // Resetujemy do pierwszej strony od razu po rozpoczęciu pisania
     if (pagination.currentPage !== 1) {
       setPagination(prev => ({ ...prev, currentPage: 1 }));
     }
+  };
+
+  // KLUCZOWA POPRAWKA: Inteligentna funkcja do tworzenia adresu URL obrazka
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return '/placeholder.jpg'; // Zabezpieczenie na wypadek braku ścieżki
+    // Jeśli ścieżka to już pełny URL (z Cloudinary), zwróć ją bez zmian.
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    // W przeciwnym razie (dla starych obrazków), doklej adres backendu.
+    return `${BACKEND_URL}/${imagePath}`;
   };
 
   return (
@@ -100,7 +90,6 @@ export default function BlogPageClient() {
               className={blogStyles.searchInput}
             />
           </div>
-
           {error && <p className={`${pageStyles.infoText} ${pageStyles.errorText}`}>{error}</p>}
           {!error && (
             <>
@@ -109,7 +98,6 @@ export default function BlogPageClient() {
                   Array.from({ length: POSTS_PER_PAGE }).map((_, index) => <SkeletonCard key={index} type="blog" />)
                 ) : (
                   posts.length > 0 ? (
-                    // Teraz AnimatePresence jest poprawnie zdefiniowane i animacje będą działać
                     <AnimatePresence>
                       {posts.map((post) => (
                         <Link key={post._id} href={`/blog/${post._id}`} className={blogStyles.cardLink}>
@@ -125,7 +113,8 @@ export default function BlogPageClient() {
                             {post.images && post.images.length > 0 && (
                               <div className={blogStyles.imageContainer}>
                                 <Image 
-                                  src={`${BACKEND_URL}/${post.images[0]}`} 
+                                  // KLUCZOWA POPRAWKA: Używamy nowej funkcji
+                                  src={getImageUrl(post.images[0])} 
                                   alt={post.title} 
                                   fill 
                                   sizes="(max-width: 768px) 100vw, 33vw" 
@@ -134,9 +123,7 @@ export default function BlogPageClient() {
                               </div>
                             )}
                             <div className={blogStyles.cardContent}>
-                              <div className={blogStyles.postMeta}>
-                                Opublikowano: {new Date(post.createdAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' })}
-                              </div>
+                              <div className={blogStyles.postMeta}>Opublikowano: {new Date(post.createdAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
                               <h2 className={blogStyles.postTitle}>{post.title}</h2>
                               <p className={blogStyles.postExcerpt}>{post.excerpt}</p>
                               <div className={blogStyles.readMoreLink}>Czytaj dalej <span className={blogStyles.arrow}>→</span></div>

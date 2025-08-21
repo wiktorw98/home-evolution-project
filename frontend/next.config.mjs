@@ -1,9 +1,15 @@
-// frontend/next.config.mjs
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     remotePatterns: [
+      // NOWY WPIS: Pozwalamy na ładowanie obrazów z naszej biblioteki Cloudinary
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        port: '',
+        pathname: '/**', // Pozwalamy na dowolną ścieżkę w tej domenie
+      },
+      // Stare wpisy pozostają, aby umożliwić działanie starych linków (jeśli będzie potrzeba)
       {
         protocol: 'http',
         hostname: 'localhost',
@@ -13,7 +19,7 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'home-evolution-backend.onrender.com',
-        port: '', // Domyślny port dla https (443), więc zostawiamy puste
+        port: '',
         pathname: '/uploads/**',
       },
     ],
