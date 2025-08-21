@@ -1,0 +1,12 @@
+/* frontend/src/app/admin/ustawienia/UstawieniaPage.module.css */
+.header { font-size: 2rem; font-weight: 700; margin-bottom: 2rem; color: #2d3748; }
+.form { max-width: 600px; background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+.formHeader { font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem; color: #2d3748; }
+.formGroup { margin-bottom: 1rem; }
+.formGroup label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: #4a5568; }
+.formGroup input { width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 1rem; }
+.submitButton { width: 100%; padding: 12px; margin-top: 1rem; font-size: 1rem; background-color: #00aaff; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; transition: background-color 0.3s; }
+.submitButton:disabled { background-color: #a0aec0; cursor: not-allowed; }
+.submitButton:hover:not(:disabled) { background-color: #0088cc; }
+.messageError { color: #e53e3e; font-weight: 500; margin-bottom: 1rem; background-color: #f8d7da; padding: 10px; border-radius: 6px; }
+.messageSuccess { color: #0f5132; font-weight: 500; margin-bottom: 1rem; background-color: #d1e7dd; padding: 10px; border-radius: 6px; }

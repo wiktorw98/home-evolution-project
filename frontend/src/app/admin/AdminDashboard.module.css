@@ -1,0 +1,15 @@
+/* frontend/src/app/admin/AdminDashboard.module.css */
+.dashboardContainer { background-color: #f8f9fa; min-height: 100vh; }
+.header { background-color: #2a3a50; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+.header h1 { font-size: 1.5rem; }
+.logoutButton { background: #e53e3e; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.3s; }
+.logoutButton:hover { background: #c53030; }
+.mainContent { padding: 2rem; max-width: 1000px; margin: 0 auto; }
+.mainContent h2 { font-size: 2rem; color: #2d3748; margin-bottom: 0.5rem; }
+.mainContent p { color: #6c757d; margin-bottom: 2rem; }
+.navGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+.navCard { display: block; background: #fff; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-decoration: none; color: inherit; transition: transform 0.3s, box-shadow 0.3s; }
+.navCard:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+.navCard h3 { font-size: 1.3rem; color: #00aaff; margin-bottom: 0.5rem; }
+.settingsCard h3 {color: #f56565;}
+.navCard p { color: #4a5568; margin: 0; }

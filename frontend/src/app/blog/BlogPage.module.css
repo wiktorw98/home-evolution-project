@@ -1,0 +1,134 @@
+/* frontend/src/app/blog/BlogPage.module.css */
+
+.mainContent {
+    background-color: #f0f7ff;
+    padding: 80px 0;
+}
+
+.blogGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 2.5rem;
+}
+
+.cardLink {
+    text-decoration: none;
+    color: inherit;
+}
+
+.blogCard {
+    background-color: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 8px 15px rgba(45, 55, 72, 0.06);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden; /* Ważne dla zaokrąglonych rogów obrazka */
+    height: 100%; /* Sprawia, że karty w jednym rzędzie mają tę samą wysokość */
+}
+
+/* NOWE STYLE DLA OBRAZKA */
+.imageContainer {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+}
+
+.image {
+    object-fit: cover;
+}
+
+.cardContent {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.postMeta {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-bottom: 0.75rem;
+}
+
+.postTitle {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0 0 1rem 0;
+    line-height: 1.4;
+    transition: color 0.3s ease;
+}
+
+.cardLink:hover .postTitle {
+    color: #00aaff;
+}
+
+.postExcerpt {
+    font-size: 1rem;
+    color: #4a5568;
+    line-height: 1.6;
+    margin: 0;
+    flex-grow: 1;
+}
+
+.readMoreLink {
+    margin-top: 1.5rem;
+    font-weight: 600;
+    color: #00aaff;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    align-self: flex-start;
+}
+
+.readMoreLink .arrow {
+    transition: transform 0.3s ease;
+}
+
+.cardLink:hover .readMoreLink .arrow {
+    transform: translateX(5px);
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 4rem;
+}
+
+.pagination button {
+    background-color: #ffffff;
+    color: #2d3748;
+    border: 1px solid #dee2e6;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+    background-color: #00aaff;
+    color: #ffffff;
+    border-color: #00aaff;
+}
+
+.pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination span {
+    font-weight: 500;
+    color: #6c757d;
+}
+
+@media (max-width: 768px) {
+    .blogGrid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,82 @@
+/* frontend/src/app/realizacje/[realizationId]/RealizationDetail.module.css */
+
+.mainContent {
+  background-color: #f8f9fa;
+  padding: 80px 0;
+}
+
+.categoryContainer {
+  margin-bottom: 2.5rem;
+}
+
+.categoryLink {
+  display: inline-block;
+  background-color: #e6f7ff; 
+  color: #005f8a;
+  padding: 6px 15px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: background-color 0.3s ease;
+}
+
+.categoryLink:hover {
+  background-color: #d1f0ff;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: flex-start;
+}
+
+/* ZMIANA: Zmieniamy nazwę z .imageColumn na .galleryColumn dla jasności */
+.galleryColumn {
+  /* ZMIANA: Dodajemy display: grid, aby poprawnie układać zdjęcia */
+  display: grid;
+  grid-template-columns: 1fr; /* Domyślnie jedna kolumna */
+  gap: 1rem; /* Odstęp między zdjęciami w galerii */
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.mainImage {
+  object-fit: cover;
+}
+
+.descriptionColumn h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+}
+
+.descriptionColumn p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #4a5568;
+}
+
+.backButtonContainer {
+  margin-top: 4rem;
+  text-align: center;
+}
+
+@media (max-width: 992px) {
+  .contentGrid {
+    grid-template-columns: 1fr;
+  }
+}

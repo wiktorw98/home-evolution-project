@@ -1,0 +1,20 @@
+/* frontend/src/components/BackButton.module.css */
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  border: 1px solid #dee2e6;
+  color: #4a5568;
+  padding: 0.6rem 1.2rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.backButton:hover {
+  background-color: #f8f9fa;
+  border-color: #ced4da;
+  transform: translateY(-2px);
+}

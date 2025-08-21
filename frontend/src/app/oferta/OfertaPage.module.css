@@ -1,0 +1,119 @@
+/* frontend/src/app/oferta/OfertaPage.module.css */
+
+.mainContent {
+    padding: 80px 0;
+    background-color: #f0f7ff;
+}
+
+.offerList {
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+}
+
+.cardLink {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.offerCard {
+    display: flex;
+    gap: 60px;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 16px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 8px 20px rgba(45, 55, 72, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.offerCard.reverse {
+    flex-direction: row-reverse;
+}
+
+/* ZMIANA: Modyfikujemy styl kontenera obrazka */
+.offerImage {
+    flex: 1;
+    min-width: 40%;
+    position: relative; /* Niezbędne dla Image z atrybutem 'fill' */
+    aspect-ratio: 16 / 10; /* Nadajemy stałe proporcje */
+    border-radius: 12px;
+    overflow: hidden; /* Ukrywa rogi obrazka, które mogłyby wystawać */
+}
+
+/* ZMIANA: Upraszczamy styl samego obrazka */
+.image {
+    object-fit: cover; /* Gwarantuje, że obraz wypełni kontener bez zniekształceń */
+}
+
+.offerContent {
+    flex: 1;
+}
+
+.offerContent h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 20px;
+}
+
+.offerContent p {
+    color: #4a5568;
+    margin-bottom: 30px;
+    line-height: 1.7;
+}
+
+.offerContent ul {
+    list-style: none;
+    padding-left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.offerContent ul li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-weight: 500;
+    color: #2d3748;
+    line-height: 1.5;
+}
+
+.benefitIcon {
+    color: #00aaff;
+    font-size: 1.2rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 992px) {
+    .offerCard,
+    .offerCard.reverse {
+        gap: 40px;
+    }
+    .offerContent h2 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .mainContent {
+        padding: 60px 0;
+    }
+    .offerList {
+        gap: 3rem;
+    }
+    .offerCard,
+    .offerCard.reverse {
+        flex-direction: column;
+        padding: 30px;
+    }
+    /* ZMIANA: Na mobile, kontener obrazka zajmuje całą szerokość */
+    .offerImage {
+        width: 100%;
+        min-width: 100%;
+    }
+}

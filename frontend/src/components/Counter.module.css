@@ -1,0 +1,19 @@
+/* frontend/src/components/Counter.module.css */
+
+.counterWrapper {
+    text-align: center;
+}
+
+.stat {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #00aaff;
+    line-height: 1.1;
+}
+
+.text {
+    margin-top: 8px;
+    color: #6c757d;
+    font-weight: 600;
+    font-size: 1rem;
+}

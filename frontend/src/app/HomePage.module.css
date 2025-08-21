@@ -1,0 +1,84 @@
+/* frontend/src/app/HomePage.module.css */
+
+.main {
+  width: 100%;
+}
+
+.hero {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  background: url('/hero-bg.jpg') no-repeat center center/cover;
+}
+
+.heroOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(5, 15, 30, 0.6);
+  z-index: 1;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.heroTitle {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.heroSubtitle {
+  font-size: 1.25rem;
+  font-weight: 300;
+  max-width: 600px;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.heroButton {
+  /* ZMIANA: Ujednolicamy kolor przycisku z naszym kolorem marki */
+  background-color: #00aaff;
+  color: white;
+  border: none;
+  padding: 15px 35px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease-in-out;
+}
+
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+
+  .heroSubtitle {
+    font-size: 1.1rem;
+  }
+
+  .heroButton {
+    padding: 12px 30px;
+    font-size: 0.9rem;
+  }
+}

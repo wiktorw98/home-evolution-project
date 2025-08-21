@@ -1,0 +1,101 @@
+/* frontend/src/components/FloatingCTA.module.css */
+.ctaBubble {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #00aaff;
+  color: #ffffff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 5px 15px rgba(0, 170, 255, 0.4);
+  cursor: pointer;
+  z-index: 999;
+}
+
+.ctaCard {
+  position: fixed;
+  bottom: 7rem; /* 2rem od dołu + 60px wysokości bąbelka + 1rem marginesu */
+  right: 2rem;
+  width: 320px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  z-index: 998;
+  overflow: hidden;
+  font-family: inherit;
+}
+
+.cardHeader {
+  background-color: #2a3a50;
+  color: #ffffff;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar {
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+}
+
+.cardHeader h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.cardHeader p {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.cardBody {
+  padding: 1.5rem;
+}
+
+.cardBody p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #4a5568;
+  margin: 0 0 1.5rem 0;
+}
+
+.phoneButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  background-color: #28a745;
+  color: #ffffff;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+}
+
+.phoneButton:hover {
+  background-color: #218838;
+}
+
+@media (max-width: 768px) {
+  .ctaBubble {
+    bottom: 1rem;
+    right: 1rem;
+  }
+  .ctaCard {
+    bottom: 6rem;
+    right: 1rem;
+    width: calc(100vw - 2rem);
+    max-width: 320px;
+  }
+}

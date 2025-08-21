@@ -1,0 +1,37 @@
+/* frontend/src/app/page-styles.module.css */
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.pageHeader {
+    background-color: #2d3748;
+    color: white;
+    padding: 60px 0;
+    text-align: center;
+}
+.pageHeader h1 {
+    font-size: 3rem;
+    font-weight: 800;
+}
+.pageHeader p {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 10px;
+}
+
+.mainContent {
+    padding: 100px 0;
+}
+
+.infoText {
+    text-align: center;
+    font-size: 1.2rem;
+    padding: 50px 0;
+    color: #718096;
+}
+.errorText {
+    color: #e53e3e;
+}

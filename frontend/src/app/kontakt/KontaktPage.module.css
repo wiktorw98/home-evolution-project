@@ -1,0 +1,215 @@
+/* frontend/src/app/kontakt/KontaktPage.module.css */
+
+.mainContent {
+    background-color: #f0f7ff;
+    padding: 80px 0;
+}
+
+.contactWrapper {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 3rem;
+    box-shadow: 0 10px 30px rgba(45, 55, 72, 0.08);
+    border: 1px solid #e9ecef;
+}
+
+.contactGrid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 4rem;
+}
+
+.formContainer h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 10px;
+}
+
+.formContainer p {
+    color: #6c757d;
+    margin-bottom: 2.5rem;
+}
+
+.formGroup {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.formGroup label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #4a5568;
+    font-size: 0.9rem;
+}
+
+.formGroup input,
+.formGroup textarea {
+    width: 100%;
+    padding: 12px 0;
+    font-size: 1rem;
+    font-family: inherit;
+    color: #2d3748;
+    border: none;
+    border-bottom: 2px solid #dee2e6;
+    background-color: transparent;
+    transition: border-color 0.3s ease;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus {
+    outline: none;
+    border-color: #00aaff; /* Ujednolicony kolor */
+}
+
+.formGroup textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.submitButton {
+    width: 100%;
+    padding: 15px;
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    background-color: #00aaff; /* Ujednolicony kolor */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.submitButton:hover:not(:disabled) {
+    background-color: #0088cc; /* Ciemniejszy odcień */
+    transform: translateY(-2px);
+}
+
+.submitButton:disabled {
+    background-color: #a0aec0;
+    cursor: not-allowed;
+}
+
+.detailsContainer {
+    border-left: 1px solid #e9ecef;
+    padding-left: 4rem;
+}
+
+.detailsContainer h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 10px;
+}
+
+.detailsContainer p {
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+    color: #4a5568;
+}
+
+.detailsContainer a {
+    color: #00aaff; /* Ujednolicony kolor */
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.detailsHeader {
+    margin-top: 2rem;
+}
+
+/* --- NOWE STYLE DLA IKON SPOŁECZNOŚCIOWYCH (identyczne jak w stopce) --- */
+.socialIcons {
+    display: flex;
+    gap: 15px;
+}
+
+.socialIcons a {
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: #c5d1e3;
+    background-color: #2a3a50; /* Ciemne tło, jak w stopce */
+    transition: all 0.3s ease;
+}
+
+.socialIcons a:hover {
+    color: #ffffff;
+    background-color: #00aaff; /* Efekt hover spójny ze stopką */
+}
+
+
+.messageSuccess, .messageError {
+    margin-top: 1.5rem;
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.messageSuccess { background-color: #d1e7dd; color: #0f5132; }
+.messageError { background-color: #f8d7da; color: #842029; }
+
+.mapSection {
+    padding-top: 0;
+}
+
+.mapFrame {
+    border: 0;
+    display: block;
+    width: 100%;
+    filter: grayscale(100%);
+    transition: filter 0.4s ease;
+}
+
+.mapFrame:hover {
+    filter: grayscale(0%);
+}
+
+@media (max-width: 992px) {
+    .contactGrid {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+    .detailsContainer {
+        border-left: none;
+        border-top: 1px solid #e9ecef;
+        padding-left: 0;
+        padding-top: 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .contactWrapper {
+        padding: 2rem;
+    }
+}
+
+.formGroup select {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: #2d3748;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  background-color: #fff;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+}
+
+.formGroup select:focus {
+  outline: none;
+  border-color: #00aaff;
+}

@@ -1,0 +1,42 @@
+/* frontend/src/app/o-nas/AboutPage.module.css */
+
+.mainContent { background-color: #ffffff; }
+.section { padding: 80px 20px; }
+.section:nth-child(even) { background-color: #f8f9fa; }
+
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+
+.imageWrapper { position: relative; aspect-ratio: 4 / 3; border-radius: 16px; overflow: hidden; box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+.image { object-fit: cover; }
+
+.sectionTitle { font-size: 2.5rem; font-weight: 700; color: #2d3748; margin-bottom: 1.5rem; }
+.sectionText { font-size: 1.1rem; line-height: 1.8; color: #4a5568; }
+
+.centeredHeader { text-align: center; }
+.centeredText { max-width: 600px; margin-left: auto; margin-right: auto; }
+
+.statsSection { background-color: #f0f7ff; }
+.statsGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 3rem; }
+
+.valuesGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 3rem; }
+.valueCard { background-color: #ffffff; padding: 2rem; border-radius: 12px; border: 1px solid #e9ecef; text-align: center; }
+.valueCard h3 { font-size: 1.5rem; color: #00aaff; margin-bottom: 1rem; }
+
+/* ZMIANA: Ustawiamy jasne tło i wyśrodkowanie dla sekcji CTA */
+.ctaSection { 
+  text-align: center; 
+  background-color: #f8f9fa; /* Jasne tło, spójne z resztą */
+}
+
+/* ZMIANA: Poprawiamy margines dla tekstu w sekcji CTA */
+.ctaSection .sectionText {
+  margin-bottom: 2rem;
+}
+
+.ctaButton { display: inline-block; background-color: #00aaff; color: #ffffff; padding: 15px 35px; border-radius: 50px; text-decoration: none; font-weight: 700; transition: all 0.3s ease; }
+.ctaButton:hover { background-color: #2d3748; color: #ffffff; transform: translateY(-3px); }
+
+@media (max-width: 992px) { 
+  .grid { grid-template-columns: 1fr; } 
+  .imageWrapper { grid-row: 1; } 
+}
