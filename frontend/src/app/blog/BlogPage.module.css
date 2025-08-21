@@ -5,6 +5,48 @@
     padding: 80px 0;
 }
 
+/* --- NOWE STYLE PASKA WYSZUKIWANIA --- */
+.searchBarContainer {
+  position: relative;
+  max-width: 500px;
+  margin: 0 auto 4rem auto; /* Wyśrodkowanie i margines dolny */
+}
+
+.searchIcon {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  color: #adb5bd; /* Subtelny szary kolor */
+  pointer-events: none; /* Umożliwia kliknięcie "przez" ikonę */
+}
+
+.searchInput {
+  width: 100%;
+  padding: 14px 20px 14px 50px; /* Większy padding po lewej na ikonę */
+  font-size: 1rem;
+  color: #2d3748;
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 50px; /* Kształt pigułki */
+  box-shadow: 0 4px 6px rgba(45, 55, 72, 0.04);
+  transition: all 0.3s ease;
+  -webkit-appearance: none; /* Usunięcie domyślnych stylów przeglądarki */
+  appearance: none;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #00aaff;
+  box-shadow: 0 0 0 4px rgba(0, 170, 255, 0.15);
+}
+
+.searchInput::placeholder {
+  color: #adb5bd;
+}
+
+
+/* --- STYLE SIATKI BLOGA (BEZ ZMIAN) --- */
 .blogGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -24,11 +66,10 @@
     display: flex;
     flex-direction: column;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    overflow: hidden; /* Ważne dla zaokrąglonych rogów obrazka */
-    height: 100%; /* Sprawia, że karty w jednym rzędzie mają tę samą wysokość */
+    overflow: hidden;
+    height: 100%;
 }
 
-/* NOWE STYLE DLA OBRAZKA */
 .imageContainer {
     position: relative;
     width: 100%;

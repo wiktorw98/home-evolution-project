@@ -4,6 +4,8 @@ import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion'; 
 import Link from 'next/link';
 import Image from 'next/image';
+// NOWY IMPORT: Dodajemy ikonę lupy
+import { FaSearch } from 'react-icons/fa';
 import pageStyles from '../Subpage.module.css'; 
 import blogStyles from './BlogPage.module.css'; 
 import SkeletonCard from '../../components/SkeletonCard';
@@ -63,14 +65,11 @@ export default function BlogPageClient() {
     }
   };
 
-  // KLUCZOWA POPRAWKA: Inteligentna funkcja do tworzenia adresu URL obrazka
   const getImageUrl = (imagePath) => {
-    if (!imagePath) return '/placeholder.jpg'; // Zabezpieczenie na wypadek braku ścieżki
-    // Jeśli ścieżka to już pełny URL (z Cloudinary), zwróć ją bez zmian.
+    if (!imagePath) return '/placeholder.jpg';
     if (imagePath.startsWith('http')) {
       return imagePath;
     }
-    // W przeciwnym razie (dla starych obrazków), doklej adres backendu.
     return `${BACKEND_URL}/${imagePath}`;
   };
 
@@ -81,7 +80,9 @@ export default function BlogPageClient() {
       </header>
       <main className={blogStyles.mainContent}>
         <div className={pageStyles.container}>
+          {/* ZMIANA: Dodajemy ikonę i poprawiamy strukturę */}
           <div className={blogStyles.searchBarContainer}>
+            <FaSearch className={blogStyles.searchIcon} />
             <input 
               type="text" 
               placeholder="Szukaj artykułów po tytule..." 
@@ -113,7 +114,6 @@ export default function BlogPageClient() {
                             {post.images && post.images.length > 0 && (
                               <div className={blogStyles.imageContainer}>
                                 <Image 
-                                  // KLUCZOWA POPRAWKA: Używamy nowej funkcji
                                   src={getImageUrl(post.images[0])} 
                                   alt={post.title} 
                                   fill 
