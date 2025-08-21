@@ -1,4 +1,3 @@
-// frontend/src/app/realizacje/[realizationId]/RealizationDetailClient.jsx
 'use client';
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
@@ -35,13 +34,22 @@ export default function RealizationDetailClient() {
     }
   }, [realizationId]);
 
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return '';
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    return `${BACKEND_URL}/${imagePath}`;
+  };
+
   const openLightbox = (index) => {
     setCurrentImageIndex(index);
     setLightboxOpen(true);
   };
 
-  // ZMIANA: Przygotowujemy slajdy dla wszystkich obrazów z tablicy 'images'
-  const slides = realization?.images?.map(image => ({ src: `${BACKEND_URL}/${image}` })) || [];
+  const slides = realization?.images?.map(image => ({ 
+    src: getImageUrl(image) 
+  })) || [];
 
   if (loading) return <div className={pageStyles.infoText}>Ładowanie...</div>;
   if (error) return <div className={`${pageStyles.infoText} ${pageStyles.errorText}`}>{error}</div>;
@@ -50,7 +58,8 @@ export default function RealizationDetailClient() {
   return (
     <div>
       <header className={pageStyles.pageHeader}>
-        <div className={pageStyles.container}>
+        {/* ZMIANA: Dodajemy nową klasę, aby kontrolować układ wewnątrz nagłówka */}
+        <div className={`${pageStyles.container} ${styles.headerContainer}`}>
           <h1>{realization.title}</h1>
           <Link href={`/realizacje?kategoria=${encodeURIComponent(realization.category)}`} className={styles.headerCategoryLink}>{realization.category}</Link>
         </div>
@@ -62,10 +71,9 @@ export default function RealizationDetailClient() {
           </div>
           <div className={styles.contentGrid}>
             <div className={styles.galleryColumn}>
-              {/* ZMIANA: Mapujemy po tablicy 'images' */}
               {realization.images && realization.images.map((image, index) => (
                 <button key={index} className={styles.imageWrapper} onClick={() => openLightbox(index)}>
-                  <Image src={`${BACKEND_URL}/${image}`} alt={`${realization.title} - zdjęcie ${index + 1}`} fill sizes="(max-width: 768px) 100vw, 50vw" className={styles.mainImage} />
+                  <Image src={getImageUrl(image)} alt={`${realization.title} - zdjęcie ${index + 1}`} fill sizes="(max-width: 768px) 100vw, 50vw" className={styles.mainImage} />
                 </button>
               ))}
             </div>

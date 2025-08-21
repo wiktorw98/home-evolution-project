@@ -1,29 +1,35 @@
-/* frontend/src/app/realizacje/[realizationId]/RealizationDetail.module.css */
-
 .mainContent {
   background-color: #f8f9fa;
   padding: 80px 0;
 }
 
-.categoryContainer {
-  margin-bottom: 2.5rem;
+/* NOWE STYLE DLA NAGŁÓWKA */
+.headerContainer {
+  display: flex;
+  flex-direction: column; /* Układamy elementy jeden pod drugim */
+  align-items: center; /* Wyśrodkowanie w poziomie */
+  gap: 0.75rem; /* Odstęp między tytułem a kategorią */
+  text-align: center;
 }
 
-.categoryLink {
-  display: inline-block;
-  background-color: #e6f7ff; 
-  color: #005f8a;
-  padding: 6px 15px;
-  border-radius: 6px;
+.headerCategoryLink {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 50px; /* Kształt etykiety */
   font-size: 0.9rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-weight: 500;
+  text-decoration: none;
   transition: background-color 0.3s ease;
 }
 
-.categoryLink:hover {
-  background-color: #d1f0ff;
+.headerCategoryLink:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+
+.categoryContainer {
+  margin-bottom: 2.5rem;
 }
 
 .contentGrid {
@@ -33,12 +39,10 @@
   align-items: flex-start;
 }
 
-/* ZMIANA: Zmieniamy nazwę z .imageColumn na .galleryColumn dla jasności */
 .galleryColumn {
-  /* ZMIANA: Dodajemy display: grid, aby poprawnie układać zdjęcia */
   display: grid;
-  grid-template-columns: 1fr; /* Domyślnie jedna kolumna */
-  gap: 1rem; /* Odstęp między zdjęciami w galerii */
+  grid-template-columns: 1fr;
+  gap: 1rem;
 }
 
 .imageWrapper {
