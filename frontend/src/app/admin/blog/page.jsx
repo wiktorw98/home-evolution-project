@@ -42,7 +42,7 @@ function PostEditor({ post, onClose, onUpdate }) {
       formData.append('images', newImages[i]);
     }
     try {
-      const response = await api.put(`/api/posts/${post._id}`, formData);
+      const response = await api.post(`/api/posts/update/${post._id}`, formData);
       onUpdate(response.data);
       onClose();
     } catch (err) { alert('Błąd podczas aktualizacji posta.'); } 
@@ -106,12 +106,12 @@ export default function AdminBlogPage() {
 
     useEffect(() => {
       if (editingPost) {
-        document.body.classList.add(styles.bodyModalOpen);
+        document.body.classList.add('body-modal-open');
       } else {
-        document.body.classList.remove(styles.bodyModalOpen);
+        document.body.classList.remove('body-modal-open');
       }
       return () => {
-        document.body.classList.remove(styles.bodyModalOpen);
+        document.body.classList.remove('body-modal-open');
       };
     }, [editingPost]);
 
@@ -166,9 +166,7 @@ export default function AdminBlogPage() {
     return (
         <AdminLayout>
             {editingPost && <PostEditor post={editingPost} onClose={() => setEditingPost(null)} onUpdate={handleUpdate} />}
-            
             <h1 className={styles.header}>Zarządzanie Blogiem</h1>
-            
             <form onSubmit={handleCreate} className={styles.form}>
                 <h2 className={styles.formHeader}>Dodaj nowy post</h2>
                 {error && <p className={styles.messageError}>{error}</p>}
@@ -187,9 +185,7 @@ export default function AdminBlogPage() {
                 </div>
                 <button type="submit" disabled={loading} className={styles.submitButton}>{loading ? 'Dodawanie...' : 'Opublikuj post'}</button>
             </form>
-            
             <hr className={styles.separator} />
-            
             <div className={styles.listContainer}>
                 <h2 className={styles.listHeader}>Istniejące Posty</h2>
                 {posts.length > 0 ? (

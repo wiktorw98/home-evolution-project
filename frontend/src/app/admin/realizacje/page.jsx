@@ -35,7 +35,7 @@ function CategoryCheckboxes({ selected, onChange }) {
         <div key={category} className={styles.checkboxWrapper}>
           <input
             type="checkbox"
-            id={`cat-${category}-${Math.random()}`} // Używamy Math.random() aby uniknąć konfliktu ID
+            id={`cat-${category}-${Math.random()}`}
             value={category}
             checked={selected.includes(category)}
             onChange={() => handleCategoryChange(category)}
@@ -155,12 +155,12 @@ export default function AdminRealizacjePage() {
 
   useEffect(() => {
     if (editingRealization) {
-      document.body.classList.add(styles.bodyModalOpen);
+      document.body.classList.add('body-modal-open');
     } else {
-      document.body.classList.remove(styles.bodyModalOpen);
+      document.body.classList.remove('body-modal-open');
     }
     return () => {
-      document.body.classList.remove(styles.bodyModalOpen);
+      document.body.classList.remove('body-modal-open');
     };
   }, [editingRealization]);
 
